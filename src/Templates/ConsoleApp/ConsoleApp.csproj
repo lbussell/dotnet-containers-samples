@@ -24,6 +24,13 @@
     <PublishReadyToRun>true</PublishReadyToRun>
 
     <!--#endif -->
+    <!--#if (aot) -->
+
+    <!-- Learn more about Native AOT:
+      https://learn.microsoft.com/dotnet/core/deploying/native-aot -->
+    <PublishAot>true</PublishAot>
+
+    <!--#endif -->
   </PropertyGroup>
 
 </Project>

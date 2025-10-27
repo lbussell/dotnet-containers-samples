@@ -1,16 +1,26 @@
 # Learn about building .NET container images:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:BASE_IMAGE_TAG AS build
+<!--#if (!aot) -->
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:SDK_IMAGE_TAG AS build
 ARG TARGETARCH
+<!--#else -->
+FROM mcr.microsoft.com/dotnet/sdk:SDK_IMAGE_TAG AS build
+<!--#endif -->
 WORKDIR /source
 
+<!--#if (!aot) -->
 # Copy project file and restore as distinct layers
 COPY --link *.csproj .
 RUN dotnet restore -a $TARGETARCH
 
+<!--#endif -->
 # Copy source code and publish app
 COPY --link . .
+<!--#if (!aot) -->
 RUN dotnet publish -a $TARGETARCH --no-restore -o /app
+<!--#else -->
+RUN dotnet publish -o /app
+<!--#endif -->
 
 
 # Runtime stage

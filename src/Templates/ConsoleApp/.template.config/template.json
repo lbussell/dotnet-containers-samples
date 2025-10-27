@@ -18,6 +18,12 @@
       "defaultValue": "false",
       "description": "Enable self-contained publishing with trimming and ReadyToRun"
     },
+    "aot": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Enable Native AOT compilation for fastest startup and smallest size"
+    },
     "baseImageOS": {
       "type": "parameter",
       "datatype": "choice",
@@ -78,15 +84,78 @@
         "datatype": "string",
         "cases": [
           {
-            "condition": "(self-contained)",
+            "condition": "(self-contained || aot)",
             "value": "runtime-deps"
           },
           {
-            "condition": "(!self-contained)",
+            "condition": "(!self-contained && !aot)",
             "value": "runtime"
           }
         ]
       }
+    },
+    "sdkImageTag": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "SDK_IMAGE_TAG",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(aot && baseImageOS == 'noble')",
+            "value": "10.0-noble-aot"
+          },
+          {
+            "condition": "(aot && baseImageOS == 'alpine')",
+            "value": "10.0-alpine-aot"
+          },
+          {
+            "condition": "(aot && baseImageOS == 'azurelinux')",
+            "value": "10.0-azurelinux3.0-aot"
+          },
+          {
+            "condition": "(!aot && baseImageOS == 'noble')",
+            "value": "10.0-noble"
+          },
+          {
+            "condition": "(!aot && baseImageOS == 'alpine')",
+            "value": "10.0-alpine"
+          },
+          {
+            "condition": "(!aot && baseImageOS == 'azurelinux')",
+            "value": "10.0-azurelinux3.0"
+          },
+          {
+            "condition": "(baseImageOS == 'nanoserver')",
+            "value": "10.0-nanoserver-ltsc2022"
+          }
+        ]
+      }
     }
-  }
+  },
+  "postActions": [
+    {
+      "condition": "(self-contained && aot)",
+      "description": "Error: self-contained and aot options are mutually exclusive",
+      "manualInstructions": [
+        {
+          "text": "Cannot use both --self-contained and --aot options together. Please choose one."
+        }
+      ],
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
+      "continueOnError": false
+    },
+    {
+      "condition": "(aot && baseImageOS == 'nanoserver')",
+      "description": "Error: Native AOT is not supported on nanoserver",
+      "manualInstructions": [
+        {
+          "text": "Native AOT compilation is not supported on Windows Nano Server. Please choose a different base OS (noble, alpine, or azurelinux)."
+        }
+      ],
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D3",
+      "continueOnError": false
+    }
+  ]
 }

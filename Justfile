@@ -12,3 +12,4 @@ clean:
 generate: install
     dotnet new container-console --force                  -o ./samples/ConsoleApp
     dotnet new container-console --force --self-contained -o ./samples/ConsoleAppSelfContained
+    dotnet new container-console --force --aot            -o ./samples/ConsoleAppNativeAot
