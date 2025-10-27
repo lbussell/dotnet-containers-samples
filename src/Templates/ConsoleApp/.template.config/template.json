@@ -10,5 +10,58 @@
     "type":"project"
   },
   "sourceName": "ConsoleApp",
-  "preferNameDirectory": true
+  "preferNameDirectory": true,
+  "symbols": {
+    "baseImageOS": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "noble",
+      "choices": [
+        {
+          "choice": "noble",
+          "description": "Ubuntu 24.04 (Noble)"
+        },
+        {
+          "choice": "alpine",
+          "description": "Alpine Linux"
+        },
+        {
+          "choice": "azurelinux",
+          "description": "Azure Linux 3.0"
+        },
+        {
+          "choice": "nanoserver",
+          "description": "Windows Nano Server LTSC 2022"
+        }
+      ],
+      "description": "The base image OS for the container"
+    },
+    "baseImageTag": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "BASE_IMAGE_TAG",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(baseImageOS == 'noble')",
+            "value": "10.0-noble"
+          },
+          {
+            "condition": "(baseImageOS == 'alpine')",
+            "value": "10.0-alpine"
+          },
+          {
+            "condition": "(baseImageOS == 'azurelinux')",
+            "value": "10.0-azurelinux3.0"
+          },
+          {
+            "condition": "(baseImageOS == 'nanoserver')",
+            "value": "10.0-nanoserver-ltsc2022"
+          }
+        ]
+      }
+    }
+  }
 }
