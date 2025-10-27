@@ -12,6 +12,12 @@
   "sourceName": "ConsoleApp",
   "preferNameDirectory": true,
   "symbols": {
+    "self-contained": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Enable self-contained publishing with trimming and ReadyToRun"
+    },
     "baseImageOS": {
       "type": "parameter",
       "datatype": "choice",
@@ -59,6 +65,25 @@
           {
             "condition": "(baseImageOS == 'nanoserver')",
             "value": "10.0-nanoserver-ltsc2022"
+          }
+        ]
+      }
+    },
+    "baseImageRepo": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "BASE_IMAGE_REPO",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(self-contained)",
+            "value": "runtime-deps"
+          },
+          {
+            "condition": "(!self-contained)",
+            "value": "runtime"
           }
         ]
       }
