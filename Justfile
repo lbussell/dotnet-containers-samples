@@ -1,4 +1,4 @@
-set shell := ["pwsh", "-c"]
+set windows-shell := ["pwsh", "-c"]
 
 default:
     just --list
@@ -7,7 +7,7 @@ install:
     dotnet new install ./src/Templates/ConsoleApp/ --force
 
 clean:
-    get-childitem ./samples | foreach-object { remove-item -r -fo $_.FullName }
+    {{ if os() == "windows" { "get-childitem ./samples | foreach-object { remove-item -r -fo $_.fullname }" } else { "rm -rf ./samples/*/" } }}
 
 generate: install
     dotnet new container-console --force                    -o ./samples/ConsoleApp
