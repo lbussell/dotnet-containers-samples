@@ -2,8 +2,32 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <IncludeBuildOutput>False</IncludeBuildOutput>
+    <IncludeSource>False</IncludeSource>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <EnableDefaultItems>False</EnableDefaultItems>
+    <UsingToolTemplateLocalizer>true</UsingToolTemplateLocalizer>
+    <IsPackable>true</IsPackable>
+    <IsShipping>true</IsShipping>
+    <IsShippingPackage>true</IsShippingPackage>
+    <NoWarn>2008;NU5105</NoWarn>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <PackageId>Microsoft.DotNet.Containers.Samples.Templates</PackageId>
+    <Authors>Microsoft</Authors>
+    <Description>.NET Project Templates for Containers Samples</Description>
+    <language>en-US</language>
+    <PackageProjectUrl>https://github.com/lbussell/dotnet-containers-samples</PackageProjectUrl>
+    <PackageType>Template</PackageType>
+    <SuppressDependenciesWhenPacking>True</SuppressDependenciesWhenPacking>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.NETCore.App" />
+    <Content Include="content\**">
+      <PackagePath>content</PackagePath>
+    </Content>
+  </ItemGroup>
 
 </Project>
