@@ -1,4 +1,3 @@
 <Solution>
   <Project Path="src/Generator/Generator.csproj" />
-  <Project Path="src/Template/Template.csproj" />
 </Solution>
