@@ -4,11 +4,29 @@
 using Generator;
 using Generator.Exec;
 
+if (args.Length == 0)
+{
+    const string usage = """
+
+        Usage: Generator <registry>
+
+        <registry> - the container registry to which images will be pushed.
+            It's needed in order to calculate the compressed image size of each sample image.
+            You must be authenticated to the registry before running this tool.
+
+        """;
+
+    Console.WriteLine(usage);
+    Environment.Exit(1);
+}
+
+var registry = args[0];
+
 // Find all samples in the samples/ directory
 var samplesToBuild =
     Directory.GetDirectories("samples")
         .Select(directory => new DirectoryInfo(directory))
-        .Select(SampleAppInfo.FromDirectory);
+        .Select(directoryInfo => SampleAppInfo.FromDirectory(directoryInfo, registry));
 
 Console.WriteLine();
 Console.WriteLine("Samples to build:");
@@ -35,7 +53,8 @@ class SampleBuilder
 
         await Docker.Build(
             contextDir: sampleAppInfo.Directory,
-            tags: [sampleAppInfo.ImageTag]);
+            tags: [sampleAppInfo.ImageTag],
+            push: true);
 
         return new SampleImage(
             AppInfo: sampleAppInfo,
@@ -46,13 +65,13 @@ class SampleBuilder
 
 class Docker
 {
-    public static async Task Build(DirectoryInfo contextDir, IEnumerable<string> tags)
+    public static async Task Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false)
     {
         IEnumerable<string> tagArgs = tags.SelectMany<string, string>(tag => ["-t", tag]);
 
         var result = await Exec.RunAsync(
             fileName: "docker",
-            arguments: ["build", "--progress=plain", .. tagArgs, contextDir.FullName],
+            arguments: ["build", "--push", "--progress=plain", .. tagArgs, contextDir.FullName],
             onStandardOutput: line => Console.WriteLine($"[{contextDir.Name}] {line}"),
             onStandardError: line => Console.Error.WriteLine($"[{contextDir.Name}] {line}"));
 
@@ -69,10 +88,10 @@ record SampleAppInfo(string Name, DirectoryInfo Directory, string ImageTag)
 {
     private const string DotNetVersion = "10.0";
 
-    public static SampleAppInfo FromDirectory(DirectoryInfo directoryInfo)
+    public static SampleAppInfo FromDirectory(DirectoryInfo directoryInfo, string registry = "")
     {
         var sampleName = directoryInfo.Name;
-        var imageTag = $"dotnet-containers-samples/{sampleName.FromPascalCaseToKebabCase()}:{DotNetVersion}";
+        var imageTag = $"{registry}/dotnet-containers-samples/{sampleName.FromPascalCaseToKebabCase()}:{DotNetVersion}";
         return new SampleAppInfo(sampleName, directoryInfo, imageTag);
     }
 }

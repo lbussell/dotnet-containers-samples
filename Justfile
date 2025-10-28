@@ -1,4 +1,9 @@
-set windows-shell := ["pwsh", "-c"]
+set shell := ["pwsh", "-c"]
+
+registry_name := "dotnet-samples-registry"
+registry_port := "5000"
+registry_image := "ghcr.io/project-zot/zot-linux-amd64"
+registry_tag := "latest"
 
 # List all available commands
 default:
@@ -10,7 +15,7 @@ install:
 
 # Remove all generated sample templates
 clean-samples:
-    {{ if os() == "windows" { "get-childitem ./samples | foreach-object { remove-item -r -fo $_.fullname }" } else { "rm -rf ./samples/*/" } }}
+    get-childitem ./samples | foreach-object { remove-item -r -fo $_.fullname }
 
 # Generate samples from templates
 generate-samples: install
@@ -22,7 +27,16 @@ generate-samples: install
 
 # Build all samples and generate markdown report of images
 generate-markdown:
-    dotnet run --project src/Generator
+    dotnet run --project src/Generator -- localhost:{{registry_port}}
 
 # Generate all assets from scratch
-generate-all: install clean-samples generate-samples generate-markdown
+generate-all: install clean-samples generate-samples start-registry generate-markdown
+    @echo "Done. See images at https://localhost:{{registry_port}} or run stop-registry."
+
+# Create a local container registry that images will be pushed to
+@start-registry:
+    docker run --rm -d -p {{registry_port}}:5000 --name {{registry_name}} {{registry_image}}
+
+# Stop the local registry container
+@stop-registry:
+    docker stop {{registry_name}}
