@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 using Generator;
-using Generator.Exec;
 
 if (args.Length == 0)
 {
@@ -43,59 +42,5 @@ foreach (var sample in samplesToBuild)
 Console.WriteLine();
 Console.WriteLine("Built samples:");
 Console.WriteLine(string.Join(Environment.NewLine, builtSamples));
-
-
-class SampleBuilder
-{
-    public async Task<SampleImage> Build(SampleAppInfo sampleAppInfo)
-    {
-        Console.WriteLine($"Building sample: {sampleAppInfo.Name}");
-
-        await Docker.Build(
-            contextDir: sampleAppInfo.Directory,
-            tags: [sampleAppInfo.ImageTag],
-            push: true);
-
-        return new SampleImage(
-            AppInfo: sampleAppInfo,
-            Digest: "unknown",
-            UncompressedSize: new ImageSize(0));
-    }
-}
-
-class Docker
-{
-    public static async Task Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false)
-    {
-        IEnumerable<string> tagArgs = tags.SelectMany<string, string>(tag => ["-t", tag]);
-
-        var result = await Exec.RunAsync(
-            fileName: "docker",
-            arguments: ["build", "--push", "--progress=plain", .. tagArgs, contextDir.FullName],
-            onStandardOutput: line => Console.WriteLine($"[{contextDir.Name}] {line}"),
-            onStandardError: line => Console.Error.WriteLine($"[{contextDir.Name}] {line}"));
-
-        if (result.ExitCode != 0)
-        {
-            throw new Exception($"Docker build failed with exit code {result.ExitCode}");
-        }
-    }
-
-    public record DockerBuildResult(string Digest, ImageSize UncompressedSize);
-}
-
-record SampleAppInfo(string Name, DirectoryInfo Directory, string ImageTag)
-{
-    private const string DotNetVersion = "10.0";
-
-    public static SampleAppInfo FromDirectory(DirectoryInfo directoryInfo, string registry = "")
-    {
-        var sampleName = directoryInfo.Name;
-        var imageTag = $"{registry}/dotnet-containers-samples/{sampleName.FromPascalCaseToKebabCase()}:{DotNetVersion}";
-        return new SampleAppInfo(sampleName, directoryInfo, imageTag);
-    }
-}
-
-record SampleImage(SampleAppInfo AppInfo, string Digest, ImageSize UncompressedSize);
 
 readonly record struct ImageSize(long Bytes);
