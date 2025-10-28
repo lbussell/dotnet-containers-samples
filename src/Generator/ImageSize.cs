@@ -3,4 +3,4 @@
 
 namespace Generator;
 
-readonly record struct ImageSize(long Bytes);
+public readonly record struct ImageSize(long Bytes);

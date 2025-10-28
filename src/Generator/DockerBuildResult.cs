@@ -3,4 +3,4 @@
 
 namespace Generator;
 
-internal sealed record SampleImage(SampleAppInfo AppInfo, string Digest, ImageSize CompressedSize);
+internal sealed record DockerBuildResult(string Digest, ImageSize CompressedSize);

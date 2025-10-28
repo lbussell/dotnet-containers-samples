@@ -3,7 +3,7 @@
 
 namespace Generator;
 
-record SampleAppInfo(string Name, DirectoryInfo Directory, string ImageTag)
+internal sealed record SampleAppInfo(string Name, DirectoryInfo Directory, string ImageTag)
 {
     private const string DotNetVersion = "10.0";
 

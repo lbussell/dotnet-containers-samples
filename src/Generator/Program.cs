@@ -35,7 +35,7 @@ var sampleBuilder = new SampleBuilder();
 var builtSamples = new List<SampleImage>();
 foreach (var sample in samplesToBuild)
 {
-    var builtSample = await sampleBuilder.Build(sample);
+    var builtSample = await sampleBuilder.BuildAsync(sample);
     builtSamples.Add(builtSample);
 }
 

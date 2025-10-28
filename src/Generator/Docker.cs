@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: Copyright (c) 2025 Logan Bussell
 // SPDX-License-Identifier: MIT
 
-namespace Generator;
+using System.Text.Json.Nodes;
 
 using static Generator.Exec.Exec;
 
-class Docker
+namespace Generator;
+
+internal sealed class Docker
 {
-    public static async Task Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false)
+    public static async Task<DockerBuildResult> Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false)
     {
         IEnumerable<string> tagArgs = tags.SelectMany<string, string>(tag => ["-t", tag]);
 
@@ -21,7 +23,25 @@ class Docker
         {
             throw new Exception($"Docker build failed with exit code {result.ExitCode}");
         }
+
+        var buildResult = await GetBuildResultAsync(tags.First());
+        return buildResult;
     }
 
-    public record DockerBuildResult(string Digest, ImageSize UncompressedSize);
+    public static async Task<DockerBuildResult> GetBuildResultAsync(string remoteImageTag)
+    {
+        var manifest = await GetManifestAsync(remoteImageTag);
+        var imageLayers = manifest["layers"]?.AsArray() ?? [];
+        long totalSize = imageLayers.Sum(layer => layer?["size"]?.GetValue<long>() ?? 0);
+        var digest = manifest["config"]?["digest"]?.GetValue<string>() ?? "";
+        return new DockerBuildResult(digest, new ImageSize(totalSize));
+    }
+
+    private static async Task<JsonNode> GetManifestAsync(string imageTag)
+    {
+        var result = await RunAsync("docker", ["buildx", "imagetools", "inspect", "--raw", imageTag]);
+        var output = JsonNode.Parse(result.StandardOutput)
+            ?? throw new Exception("Failed to parse image manifest as JSON.");
+        return output;
+    }
 }

@@ -3,20 +3,24 @@
 
 namespace Generator;
 
-class SampleBuilder
+internal sealed class SampleBuilder
 {
-    public async Task<SampleImage> Build(SampleAppInfo sampleAppInfo)
+    public async Task<SampleImage> BuildAsync(SampleAppInfo sampleAppInfo)
     {
-        Console.WriteLine($"Building sample: {sampleAppInfo.Name}");
+        Console.WriteLine($"""
 
-        await Docker.Build(
+            Building sample: {sampleAppInfo.Name}
+
+            """);
+
+        var buildResult = await Docker.Build(
             contextDir: sampleAppInfo.Directory,
             tags: [sampleAppInfo.ImageTag],
             push: true);
 
         return new SampleImage(
             AppInfo: sampleAppInfo,
-            Digest: "unknown",
-            UncompressedSize: new ImageSize(0));
+            Digest: buildResult.Digest,
+            CompressedSize: buildResult.CompressedSize);
     }
 }
