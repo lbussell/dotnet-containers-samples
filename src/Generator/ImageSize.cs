@@ -3,7 +3,7 @@
 
 namespace Generator;
 
-public readonly record struct ImageSize(long Bytes)
+internal readonly record struct ImageSize(long Bytes)
 {
     public override string ToString()
     {

@@ -42,5 +42,3 @@ foreach (var sample in samplesToBuild)
 Console.WriteLine();
 Console.WriteLine("Built samples:");
 Console.WriteLine(string.Join(Environment.NewLine, builtSamples));
-
-readonly record struct ImageSize(long Bytes);
