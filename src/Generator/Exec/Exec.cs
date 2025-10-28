@@ -10,9 +10,9 @@ public static class Exec
 {
     public static async Task<ProcessResult> RunAsync(
         string fileName,
-        IEnumerable<string>? arguments,
-        Action<string?>? onStandardOutput,
-        Action<string?>? onStandardError)
+        IEnumerable<string>? arguments = null,
+        Action<string?>? onStandardOutput = null,
+        Action<string?>? onStandardError = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
         arguments ??= [];
