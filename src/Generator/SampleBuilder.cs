@@ -5,18 +5,18 @@ namespace Generator;
 
 internal sealed class SampleBuilder
 {
-    public async Task<SampleImage> BuildAsync(SampleAppInfo sampleAppInfo)
+    public async Task<SampleImage> BuildAsync(SampleAppInfo sampleAppInfo, bool forceBuild = false)
     {
         Console.WriteLine($"""
 
             Building sample: {sampleAppInfo.Name}
-
             """);
 
         var buildResult = await Docker.Build(
             contextDir: sampleAppInfo.Directory,
             tags: [sampleAppInfo.ImageTag],
-            push: true);
+            push: true,
+            forceBuild: forceBuild);
 
         return new SampleImage(
             AppInfo: sampleAppInfo,

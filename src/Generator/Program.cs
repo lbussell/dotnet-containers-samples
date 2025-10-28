@@ -2,6 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 using Generator;
+using Generator.Markdown;
+using Generator.Report;
+
+const string ReportFile = "README.Report.md";
+const string ReportTemplateFilePath = "src/Templates/Report.md";
+const bool ForceBuild = false;
 
 if (args.Length == 0)
 {
@@ -21,6 +27,10 @@ if (args.Length == 0)
 
 var registry = args[0];
 
+// Load template from file early to fail fast if it doesn't exist
+var reportTemplateContent = File.ReadAllText(ReportTemplateFilePath);
+var reportTemplate = ReportTemplate.Create(reportTemplateContent);
+
 // Find all samples in the samples/ directory
 var samplesToBuild =
     Directory.GetDirectories("samples")
@@ -35,7 +45,7 @@ var sampleBuilder = new SampleBuilder();
 var builtSamples = new List<SampleImage>();
 foreach (var sample in samplesToBuild)
 {
-    var builtSample = await sampleBuilder.BuildAsync(sample);
+    var builtSample = await sampleBuilder.BuildAsync(sample, forceBuild: ForceBuild);
     builtSamples.Add(builtSample);
 }
 
