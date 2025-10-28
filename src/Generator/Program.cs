@@ -52,3 +52,17 @@ foreach (var sample in samplesToBuild)
 Console.WriteLine();
 Console.WriteLine("Built samples:");
 Console.WriteLine(string.Join(Environment.NewLine, builtSamples));
+
+IEnumerable<TableColumn> columns = [new("Name"), new("Compressed Size", Alignment.Right)];
+var rows = builtSamples.Select(sample => new[] { sample.AppInfo.Name, sample.CompressedSize.ToString() });
+var tableBuilder = new MarkdownTableBuilder()
+    .WithColumns(columns)
+    .AddRows(rows);
+
+var markdownTable = tableBuilder.Build();
+var reportData = new ReportTemplateData(Table: markdownTable);
+var reportContent = reportTemplate.Render(data: reportData);
+File.WriteAllText(ReportFile, reportContent);
+
+Console.WriteLine();
+Console.WriteLine($"Wrote report to {ReportFile}");
