@@ -1,8 +1,8 @@
 set shell := ["pwsh", "-c"]
 
 registry_name := "dotnet-samples-registry"
-registry_port := "5000"
-registry_image := "ghcr.io/project-zot/zot-linux-amd64"
+registry_port := "5001"
+registry_image := "ghcr.io/project-zot/zot"
 registry_tag := "latest"
 
 # List all available commands
