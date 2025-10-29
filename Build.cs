@@ -72,4 +72,12 @@ class Build
                 logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
         }
     }
+
+    public async Task GenerateAll()
+    {
+        await Install();
+        await GenerateSamples();
+        await BuildSamples();
+        await GenerateMarkdown();
+    }
 }
