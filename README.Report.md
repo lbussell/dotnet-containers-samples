@@ -13,6 +13,7 @@
 | ConsoleAppNativeAot               | [Native AOT]          | ✖️ No      | ✖️ No         |        48.18 MB |
 | ConsoleAppDistrolessAot           | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.51 MB |
 | WebApi                            | [Framework-dependent] | ✖️ No      | ✖️ No         |        92.48 MB |
+| WebApiNativeAot                   | [Native AOT]          | ✖️ No      | ✖️ No         |        59.05 MB |
 
 For more information on .NET image variants and AOT images, please see the following documentation:
 
