@@ -59,15 +59,6 @@ class Build
                 onStandardOutput: Console.WriteLine,
                 onStandardError: Console.Error.WriteLine,
                 logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
-
-            var configContent = JsonSerializer.Serialize(sample, typeof(SampleDefinition), context: AppJsonSerializerContext.Default);
-            File.WriteAllText(sample.ConfigPath, configContent);
         }
     }
-}
-
-[JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
-[JsonSerializable(typeof(SampleDefinition))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
 }
