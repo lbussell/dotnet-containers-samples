@@ -13,3 +13,7 @@ For more information on .NET image variants and AOT images, please see the follo
 - [Announcement: New approach for differentiating .NET 8+ images](https://github.com/dotnet/dotnet-docker/discussions/4821)
 
 Watch the [announcements page](https://github.com/dotnet/dotnet-docker/discussions/categories/announcements) for the latest information on new features and changes in .NET contanier images.
+
+[Framework-dependent]: https://learn.microsoft.com/dotnet/core/deploying/#publish-framework-dependent
+[Self-contained]: https://learn.microsoft.com/dotnet/core/deploying/#publish-self-contained
+[Native AOT]: https://learn.microsoft.com/dotnet/core/deploying/native-aot/

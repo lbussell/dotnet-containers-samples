@@ -85,7 +85,7 @@ internal sealed class MarkdownTableBuilder : IMarkdownTableBuilder
 
         var builder = new StringBuilder();
 
-    AppendRow(index => headers[index]);
+        AppendRow(index => headers[index]);
         AppendAlignmentRow();
 
         foreach (var row in normalizedRows)
@@ -93,7 +93,7 @@ internal sealed class MarkdownTableBuilder : IMarkdownTableBuilder
             AppendRow(index => index < row.Length ? row[index] : string.Empty);
         }
 
-        return builder.ToString();
+        return builder.ToString().TrimEnd('\r', '\n');
 
         string FormatCell(string content, int width, Alignment alignment) => alignment switch
         {

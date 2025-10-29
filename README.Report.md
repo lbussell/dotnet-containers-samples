@@ -4,14 +4,13 @@
 
 ## Image Sizes
 
-| Name                    | Compressed Size |
-| ----------------------- | --------------: |
-| ConsoleApp              |        80.30 MB |
-| ConsoleAppDistroless    |        40.63 MB |
-| ConsoleAppDistrolessAot |         8.51 MB |
-| ConsoleAppNativeAot     |        48.18 MB |
-| ConsoleAppSelfContained |        53.29 MB |
-
+| Name                    | Publish Type          | Distroless | Globalization | Compressed Size |
+| ----------------------- | --------------------- | ---------- | ------------- | --------------: |
+| ConsoleApp              | [Framework-dependent] | ✖️ No      | ✖️ No         |        80.30 MB |
+| ConsoleAppDistroless    | [Framework-dependent] | ✅ Yes      | ✖️ No         |        40.63 MB |
+| ConsoleAppSelfContained | [Self-contained]      | ✖️ No      | ✖️ No         |        53.29 MB |
+| ConsoleAppNativeAot     | [Native AOT]          | ✖️ No      | ✖️ No         |        48.18 MB |
+| ConsoleAppDistrolessAot | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.51 MB |
 
 For more information on .NET image variants and AOT images, please see the following documentation:
 
@@ -20,3 +19,7 @@ For more information on .NET image variants and AOT images, please see the follo
 - [Announcement: New approach for differentiating .NET 8+ images](https://github.com/dotnet/dotnet-docker/discussions/4821)
 
 Watch the [announcements page](https://github.com/dotnet/dotnet-docker/discussions/categories/announcements) for the latest information on new features and changes in .NET contanier images.
+
+[Framework-dependent]: https://learn.microsoft.com/dotnet/core/deploying/#publish-framework-dependent
+[Self-contained]: https://learn.microsoft.com/dotnet/core/deploying/#publish-self-contained
+[Native AOT]: https://learn.microsoft.com/dotnet/core/deploying/native-aot/

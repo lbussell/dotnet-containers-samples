@@ -13,6 +13,14 @@ public record SampleDefinition(string ParentDirectory, string Name, PublishType 
     public string ConfigPath => Path.Combine(OutputPath, "config.json");
     public string GetFullImageName(string registry) => $"{registry}/{ImageRepo}:{ImageTag}";
 
+    public string PublishTypeLink => PublishType switch
+    {
+        PublishType.FrameworkDependent => "[Framework-dependent]",
+        PublishType.SelfContained => "[Self-contained]",
+        PublishType.NativeAot => "[Native AOT]",
+        _ => throw new ArgumentOutOfRangeException()
+    };
+
     public IEnumerable<string> GetOptions()
     {
         List<string> options = [];

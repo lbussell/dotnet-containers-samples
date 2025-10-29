@@ -42,8 +42,27 @@ public class GeneratorApp
 
         IEnumerable<(SampleDefinition AppInfo, RemoteManifestInfo Manifest)> sampleImages = samples.Zip(sampleManifests);
 
-        IEnumerable<TableColumn> columns = [new("Name"), new("Compressed Size", Alignment.Right)];
-        var rows = sampleImages.Select(sample => new[] { sample.AppInfo.Name, sample.Manifest.CompressedSize.ToString() });
+        IEnumerable<TableColumn> columns =
+        [
+            new("Name"),
+            new("Publish Type"),
+            new("Distroless"),
+            new("Globalization"),
+            new("Compressed Size", Alignment.Right)
+        ];
+
+        const string yes = "✅ Yes";
+        const string no = "✖️ No";
+
+        var rows = sampleImages.Select(sample => new[]
+        {
+            sample.AppInfo.Name,
+            sample.AppInfo.PublishTypeLink,
+            sample.AppInfo.Distroless ? yes : no,
+            sample.AppInfo.Globalization ? yes : no,
+            sample.Manifest.CompressedSize.ToString()
+        });
+
         var tableBuilder = new MarkdownTableBuilder()
             .WithColumns(columns)
             .AddRows(rows);
