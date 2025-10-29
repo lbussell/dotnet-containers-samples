@@ -13,7 +13,7 @@ public record SampleDefinition(string ParentDirectory, string Name, PublishType 
     public string ConfigPath => Path.Combine(OutputPath, "config.json");
     public string GetFullImageName(string registry) => $"{registry}/{ImageRepo}:{ImageTag}";
 
-    public IEnumerable<string> GetOptions(string samplesDir)
+    public IEnumerable<string> GetOptions()
     {
         List<string> options = [];
         options.AddRange("-o", OutputPath);

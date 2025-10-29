@@ -55,7 +55,7 @@ class Build
     {
         foreach (var sample in _samples)
         {
-            await RunAsync("dotnet", ["new", "container-console", "--force", .. sample.GetOptions(SamplesDir)],
+            await RunAsync("dotnet", ["new", "container-console", "--force", ..sample.GetOptions()],
                 onStandardOutput: Console.WriteLine,
                 onStandardError: Console.Error.WriteLine,
                 logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
