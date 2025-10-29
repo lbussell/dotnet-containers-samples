@@ -34,8 +34,12 @@ class Build
     ];
 
     private readonly IEnumerable<SampleDefinition> _webSamples = [
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApi",          PublishType.FrameworkDependent, Distroless: false, Globalization: false, Description: "Framework-dependent web API"),
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiNativeAot", PublishType.NativeAot,          Distroless: false, Globalization: false, Description: "Native AOT web API"),
+        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApi",                        PublishType.FrameworkDependent, Distroless: false, Globalization: false, Description: "Framework-dependent web API"),
+        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiDistroless",              PublishType.FrameworkDependent, Distroless: true,  Globalization: false, Description: ""),
+        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiSelfContained",           PublishType.SelfContained,      Distroless: false, Globalization: false, Description: ""),
+        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiSelfContainedDistroless", PublishType.SelfContained,      Distroless: true,  Globalization: false, Description: ""),
+        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiNativeAot",               PublishType.NativeAot,          Distroless: false, Globalization: false, Description: ""),
+        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiNativeAotDistroless",     PublishType.NativeAot,          Distroless: true,  Globalization: false, Description: ""),
     ];
 
     private IEnumerable<SampleDefinition> AllSamples => [.._consoleSamples, .._webSamples];

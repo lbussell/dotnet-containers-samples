@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Learn more about globalization:
+         https://learn.microsoft.com/en-us/dotnet/core/extensions/globalization-icu -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- Learn more about Native AOT:
+         https://learn.microsoft.com/dotnet/core/deploying/native-aot -->
+    <PublishAot>true</PublishAot>
+
+  </PropertyGroup>
+
+</Project>

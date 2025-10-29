@@ -13,7 +13,11 @@
 | ConsoleAppNativeAot               | [Native AOT]          | ✖️ No      | ✖️ No         |        48.18 MB |
 | ConsoleAppDistrolessAot           | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.51 MB |
 | WebApi                            | [Framework-dependent] | ✖️ No      | ✖️ No         |        92.48 MB |
-| WebApiNativeAot                   | [Native AOT]          | ✖️ No      | ✖️ No         |        59.05 MB |
+| WebApiDistroless                  | [Framework-dependent] | ✅ Yes      | ✖️ No         |        52.81 MB |
+| WebApiSelfContained               | [Self-contained]      | ✖️ No      | ✖️ No         |        61.53 MB |
+| WebApiSelfContainedDistroless     | [Self-contained]      | ✅ Yes      | ✖️ No         |        21.86 MB |
+| WebApiNativeAot                   | [Native AOT]          | ✖️ No      | ✖️ No         |        51.27 MB |
+| WebApiNativeAotDistroless         | [Native AOT]          | ✅ Yes      | ✖️ No         |        11.60 MB |
 
 For more information on .NET image variants and AOT images, please see the following documentation:
 

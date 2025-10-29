@@ -6,13 +6,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!--#if (!globalization)-->
     <!-- Learn more about globalization:
          https://learn.microsoft.com/en-us/dotnet/core/extensions/globalization-icu -->
     <InvariantGlobalization>true</InvariantGlobalization>
 
-    <!--#endif-->
-    <!--#if (self-contained) -->
     <!-- Learn more about self-contained publish:
          https://learn.microsoft.com/dotnet/core/deploying/#publish-self-contained -->
     <PublishSelfContained>true</PublishSelfContained>
@@ -29,13 +26,6 @@
          https://learn.microsoft.com/dotnet/core/deploying/ready-to-run -->
     <PublishReadyToRun>true</PublishReadyToRun>
 
-    <!--#endif -->
-    <!--#if (aot) -->
-    <!-- Learn more about Native AOT:
-         https://learn.microsoft.com/dotnet/core/deploying/native-aot -->
-    <PublishAot>true</PublishAot>
-
-    <!--#endif -->
   </PropertyGroup>
 
 </Project>
