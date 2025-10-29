@@ -81,7 +81,8 @@ public static class Exec
             fileName: commandParts.First(),
             arguments: commandParts.Skip(1),
             onStandardOutput: Console.WriteLine,
-            onStandardError: Console.Error.WriteLine);
+            onStandardError: Console.Error.WriteLine,
+            logCommand: cmd => Console.WriteLine($"\nRunning `{cmd}`"));
 
         return result;
     }
