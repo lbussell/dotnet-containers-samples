@@ -3,7 +3,7 @@
 
 namespace Generator;
 
-public record SampleDefinition(string ParentDirectory, string Name, PublishType PublishType, bool Distroless, bool Globalization, string Description)
+public record SampleDefinition(string ParentDirectory, string TemplateName, string Name, PublishType PublishType, bool Distroless, bool Globalization, string Description)
 {
     private const string DotNetVersion = "10.0";
 

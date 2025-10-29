@@ -26,11 +26,11 @@ class Build
     private const string ReportFile = "README.Report.md";
 
     private readonly SampleDefinition[] _samples = [
-        new(ParentDirectory: "samples", Name: "ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
-        new(ParentDirectory: "samples", Name: "ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
-        new(ParentDirectory: "samples", Name: "ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
-        new(ParentDirectory: "samples", Name: "ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
-        new(ParentDirectory: "samples", Name: "ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
+        new(ParentDirectory: "samples", TemplateName: "container-console", Name: "ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
+        new(ParentDirectory: "samples", TemplateName: "container-console", Name: "ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
+        new(ParentDirectory: "samples", TemplateName: "container-console", Name: "ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
+        new(ParentDirectory: "samples", TemplateName: "container-console", Name: "ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
+        new(ParentDirectory: "samples", TemplateName: "container-console", Name: "ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
     ];
 
     public async Task Install() => await RunAsync("dotnet new install ./src/Templates/ConsoleApp/ --force");
@@ -55,7 +55,7 @@ class Build
     {
         foreach (var sample in _samples)
         {
-            await RunAsync("dotnet", ["new", "container-console", "--force", ..sample.GetOptions()],
+            await RunAsync("dotnet", ["new", sample.TemplateName, "--force", ..sample.GetOptions()],
                 onStandardOutput: Console.WriteLine,
                 onStandardError: Console.Error.WriteLine,
                 logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
