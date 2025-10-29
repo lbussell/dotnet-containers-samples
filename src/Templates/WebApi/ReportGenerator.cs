@@ -1,4 +1,4 @@
-#if (!aot)
+#if (!stjSourceGen)
 using System.Text.Json;
 #else
 using System.Text.Json.Serialization;
@@ -11,7 +11,7 @@ namespace ReleaseReport;
 
 public static class Generator
 {
-    #if (!aot)
+    #if (!stjSourceGen)
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower,
@@ -37,7 +37,7 @@ public static class Generator
         HttpClient httpClient = new();
         string loadError = "Failed to load release information.";
 
-        #if (aot)
+        #if (stjSourceGen)
         ReleaseIndex releases = await httpClient.GetFromJsonAsync<ReleaseIndex>(Values.RELEASE_INDEX_URL, ReleaseJsonSerializerContext.Default.ReleaseIndex) ?? throw new Exception(loadError);
         #else
         ReleaseIndex releases = await httpClient.GetFromJsonAsync<ReleaseIndex>(Values.RELEASE_INDEX_URL, JsonOptions) ?? throw new Exception(loadError);
@@ -52,7 +52,7 @@ public static class Generator
                 continue;
             }
 
-            #if (aot)
+            #if (stjSourceGen)
             MajorRelease release = await httpClient.GetFromJsonAsync<MajorRelease>(releaseSummary.ReleasesJson, ReleaseJsonSerializerContext.Default.MajorRelease) ?? throw new Exception(loadError);
             #else
             MajorRelease release = await httpClient.GetFromJsonAsync<MajorRelease>(releaseSummary.ReleasesJson, JsonOptions) ?? throw new Exception(loadError);
@@ -101,7 +101,7 @@ public static class Generator
         return positiveNumber ? Math.Abs(daysAgo) : daysAgo;
     }
 }
-#if (aot)
+#if (stjSourceGen)
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.KebabCaseLower)]
 [JsonSerializable(typeof(ReleaseIndex))]

@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: Copyright (c) 2025 Logan Bussell
 // SPDX-License-Identifier: MIT
 
-#if (aot)
+#if (stjSourceGen)
 using System.Text.Json.Serialization;
 
 #endif
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.Services.AddHealthChecks();
 
-#if (aot)
+#if (stjSourceGen)
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
@@ -19,7 +19,7 @@ var app = builder.Build();
 app.MapHealthChecks("/healthz");
 app.MapGet("/releases", async () => await ReleaseReport.Generator.MakeReportAsync());
 app.Run();
-#if (aot)
+#if (stjSourceGen)
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.KebabCaseLower)]
 [JsonSerializable(typeof(ReportJson.Report))]

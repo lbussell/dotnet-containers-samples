@@ -3,9 +3,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-noble-aot AS build
 WORKDIR /source
 
-# Copy source code and publish app
+# Build the app
 COPY --link . .
-RUN dotnet publish -o /app
+RUN --mount=type=cache,target=/root/.nuget \
+    --mount=type=cache,target=/source/bin \
+    --mount=type=cache,target=/source/obj \
+    dotnet publish -o /app WebApi.csproj \
+        && rm /app/*.dbg /app/*.Development.json
 
 
 # Runtime stage

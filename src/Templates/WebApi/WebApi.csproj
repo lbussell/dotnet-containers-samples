@@ -30,7 +30,7 @@
     <PublishReadyToRun>true</PublishReadyToRun>
 
     <!--#endif -->
-    <!--#if (aot) -->
+    <!--#if (stjSourceGen) -->
     <!-- Learn more about Native AOT:
          https://learn.microsoft.com/dotnet/core/deploying/native-aot -->
     <PublishAot>true</PublishAot>

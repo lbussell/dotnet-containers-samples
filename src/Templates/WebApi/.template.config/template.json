@@ -160,6 +160,24 @@
           }
         ]
       }
+    },
+    "stjSourceGen": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(aot || self-contained)",
+            "value": "true"
+          },
+          {
+            "condition": "(!aot && !self-contained)",
+            "value": "false"
+          }
+        ]
+      }
     }
   },
   "postActions": [

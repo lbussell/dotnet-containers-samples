@@ -4,13 +4,12 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build
 ARG TARGETARCH
 WORKDIR /source
 
-# Copy project file and restore as distinct layers
-COPY --link *.csproj .
-RUN dotnet restore -a $TARGETARCH
-
-# Copy source code and publish app
+# Build the app
 COPY --link . .
-RUN dotnet publish -a $TARGETARCH --no-restore -o /app
+RUN --mount=type=cache,target=/root/.nuget \
+    --mount=type=cache,target=/source/bin \
+    --mount=type=cache,target=/source/obj \
+    dotnet publish -o /app WebApi.csproj
 
 
 # Runtime stage
