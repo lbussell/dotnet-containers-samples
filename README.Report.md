@@ -4,13 +4,14 @@
 
 ## Image Sizes
 
-| Name                    | Publish Type          | Distroless | Globalization | Compressed Size |
-| ----------------------- | --------------------- | ---------- | ------------- | --------------: |
-| ConsoleApp              | [Framework-dependent] | ✖️ No      | ✖️ No         |        80.30 MB |
-| ConsoleAppDistroless    | [Framework-dependent] | ✅ Yes      | ✖️ No         |        40.63 MB |
-| ConsoleAppSelfContained | [Self-contained]      | ✖️ No      | ✖️ No         |        53.29 MB |
-| ConsoleAppNativeAot     | [Native AOT]          | ✖️ No      | ✖️ No         |        48.18 MB |
-| ConsoleAppDistrolessAot | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.51 MB |
+| Name                              | Publish Type          | Distroless | Globalization | Compressed Size |
+| --------------------------------- | --------------------- | ---------- | ------------- | --------------: |
+| ConsoleApp                        | [Framework-dependent] | ✖️ No      | ✖️ No         |        80.30 MB |
+| ConsoleAppDistroless              | [Framework-dependent] | ✅ Yes      | ✖️ No         |        40.63 MB |
+| ConsoleAppSelfContained           | [Self-contained]      | ✖️ No      | ✖️ No         |        53.29 MB |
+| ConsoleAppSelfContainedDistroless | [Self-contained]      | ✅ Yes      | ✖️ No         |        13.62 MB |
+| ConsoleAppNativeAot               | [Native AOT]          | ✖️ No      | ✖️ No         |        48.18 MB |
+| ConsoleAppDistrolessAot           | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.51 MB |
 
 For more information on .NET image variants and AOT images, please see the following documentation:
 
