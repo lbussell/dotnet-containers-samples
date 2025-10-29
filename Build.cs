@@ -25,27 +25,35 @@ class Build
     private const string ReportTemplateFile = "src/Templates/Report.md";
     private const string ReportFile = "README.Report.md";
 
+    private readonly SampleDefinition[] _samples = [
+        new("ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
+        new("ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
+        new("ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
+        new("ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
+        new("ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
+    ];
+
     public async Task Install() => await RunAsync("dotnet new install ./src/Templates/ConsoleApp/ --force");
 
     public async Task StartRegistry() => await RunAsync($"docker run --rm -d -p {RegistryPort}:5000 --name {RegistryName} {RegistryImage}");
 
     public async Task StopRegistry() => await RunAsync($"docker stop {RegistryName}");
 
-    public async Task BuildSamples() => await RunAsync($"dotnet run --project src/Generator -- build-samples --samples-dir {SamplesDir} --registry {Registry}");
+    public async Task BuildSamples()
+    {
+        var generator = new GeneratorApp();
+        await generator.BuildSamples(SamplesDir, Registry);
+    }
 
-    public async Task GenerateMarkdown() => await RunAsync($"dotnet run --project src/Generator -- generate-report --samples-dir {SamplesDir} --registry {Registry} --template-file {ReportTemplateFile} --output {ReportFile}");
+    public async Task GenerateMarkdown()
+    {
+        var generator = new GeneratorApp();
+        await generator.GenerateReport(SamplesDir, Registry, ReportTemplateFile, ReportFile);
+    }
 
     public async Task GenerateSamples()
     {
-        IEnumerable<SampleDefinition> samples = [
-            new("ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
-            new("ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
-            new("ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
-            new("ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
-            new("ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
-        ];
-
-        foreach (var sample in samples)
+        foreach (var sample in _samples)
         {
             await RunAsync("dotnet", ["new", "container-console", "--force", .. sample.GetOptions(SamplesDir)],
                 onStandardOutput: Console.WriteLine,
