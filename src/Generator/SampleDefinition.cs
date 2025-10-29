@@ -3,14 +3,20 @@
 
 namespace Generator;
 
-public record SampleDefinition(string Name, PublishType PublishType, bool Distroless, bool Globalization, string Description)
+public record SampleDefinition(string ParentDirectory, string Name, PublishType PublishType, bool Distroless, bool Globalization, string Description)
 {
-    public string GetOutputPath(string samplesDir) => Path.Combine(samplesDir, Name);
+    private const string DotNetVersion = "10.0";
+
+    public string ImageRepo => $"dotnet-containers-samples/{Name.FromPascalCaseToKebabCase()}";
+    public string ImageTag => DotNetVersion;
+    public string OutputPath => Path.Combine(ParentDirectory, Name);
+    public string ConfigPath => Path.Combine(OutputPath, "config.json");
+    public string GetFullImageName(string registry) => $"{registry}/{ImageRepo}:{ImageTag}";
 
     public IEnumerable<string> GetOptions(string samplesDir)
     {
         List<string> options = [];
-        options.AddRange("-o", GetOutputPath(samplesDir));
+        options.AddRange("-o", OutputPath);
 
         if (PublishType == PublishType.NativeAot)
         {

@@ -3,4 +3,4 @@
 
 namespace Generator;
 
-internal sealed record SampleImage(SampleAppInfo AppInfo, string Digest, ImageSize CompressedSize);
+internal sealed record SampleImage(SampleDefinition AppInfo, string Digest, ImageSize CompressedSize);

@@ -26,11 +26,11 @@ class Build
     private const string ReportFile = "README.Report.md";
 
     private readonly SampleDefinition[] _samples = [
-        new("ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
-        new("ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
-        new("ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
-        new("ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
-        new("ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
+        new(ParentDirectory: "samples", Name: "ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
+        new(ParentDirectory: "samples", Name: "ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
+        new(ParentDirectory: "samples", Name: "ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
+        new(ParentDirectory: "samples", Name: "ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
+        new(ParentDirectory: "samples", Name: "ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
     ];
 
     public async Task Install() => await RunAsync("dotnet new install ./src/Templates/ConsoleApp/ --force");
@@ -39,16 +39,16 @@ class Build
 
     public async Task StopRegistry() => await RunAsync($"docker stop {RegistryName}");
 
-    public async Task BuildSamples()
+    public async Task BuildSamples(bool noCache = false)
     {
         var generator = new GeneratorApp();
-        await generator.BuildSamples(SamplesDir, Registry);
+        await generator.BuildSamples(_samples, Registry, noCache);
     }
 
     public async Task GenerateMarkdown()
     {
         var generator = new GeneratorApp();
-        await generator.GenerateReport(SamplesDir, Registry, ReportTemplateFile, ReportFile);
+        await generator.GenerateReport(_samples, Registry, ReportTemplateFile, ReportFile);
     }
 
     public async Task GenerateSamples()
@@ -60,9 +60,8 @@ class Build
                 onStandardError: Console.Error.WriteLine,
                 logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
 
-            var configPath = Path.Combine(sample.GetOutputPath(SamplesDir), "config.json");
             var configContent = JsonSerializer.Serialize(sample, typeof(SampleDefinition), context: AppJsonSerializerContext.Default);
-            File.WriteAllText(configPath, configContent);
+            File.WriteAllText(sample.ConfigPath, configContent);
         }
     }
 }
