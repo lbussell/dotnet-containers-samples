@@ -13,7 +13,6 @@
 
     <!--#endif-->
     <!--#if (self-contained) -->
-
     <!-- Learn more about self-contained publish:
          https://learn.microsoft.com/dotnet/core/deploying/#publish-self-contained -->
     <PublishSelfContained>true</PublishSelfContained>
@@ -32,7 +31,6 @@
 
     <!--#endif -->
     <!--#if (aot) -->
-
     <!-- Learn more about Native AOT:
          https://learn.microsoft.com/dotnet/core/deploying/native-aot -->
     <PublishAot>true</PublishAot>

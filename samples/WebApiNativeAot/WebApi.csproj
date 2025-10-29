@@ -10,7 +10,6 @@
          https://learn.microsoft.com/en-us/dotnet/core/extensions/globalization-icu -->
     <InvariantGlobalization>true</InvariantGlobalization>
 
-
     <!-- Learn more about Native AOT:
          https://learn.microsoft.com/dotnet/core/deploying/native-aot -->
     <PublishAot>true</PublishAot>
