@@ -1,7 +1,0 @@
-{
-  "Name": "ConsoleAppDistrolessAot",
-  "PublishType": "NativeAot",
-  "Distroless": true,
-  "Globalization": false,
-  "Description": "Distroless native AOT console app"
-}

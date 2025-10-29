@@ -1,7 +1,0 @@
-{
-  "Name": "ConsoleApp",
-  "PublishType": "FrameworkDependent",
-  "Distroless": false,
-  "Globalization": false,
-  "Description": "Framework-dependent console app"
-}

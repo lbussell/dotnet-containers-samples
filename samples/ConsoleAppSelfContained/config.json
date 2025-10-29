@@ -1,7 +1,0 @@
-{
-  "Name": "ConsoleAppSelfContained",
-  "PublishType": "SelfContained",
-  "Distroless": false,
-  "Globalization": false,
-  "Description": "Self-contained console app with trimming and ReadyToRun"
-}

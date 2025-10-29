@@ -1,7 +1,0 @@
-{
-  "Name": "ConsoleAppDistroless",
-  "PublishType": "FrameworkDependent",
-  "Distroless": true,
-  "Globalization": false,
-  "Description": "Framework-dependent console app with distroless base image"
-}
