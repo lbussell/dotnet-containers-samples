@@ -76,13 +76,13 @@ public static class Exec
 
     public static async Task<ProcessResult> RunAsync(string command)
     {
-        var commandParts = command.Split(' ');
+        var commandParts = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var result = await RunAsync(
             fileName: commandParts.First(),
             arguments: commandParts.Skip(1),
             onStandardOutput: Console.WriteLine,
             onStandardError: Console.Error.WriteLine,
-            logCommand: cmd => Console.WriteLine($"\nRunning `{cmd}`"));
+            logCommand: cmd => Console.WriteLine($"Running `{cmd}`"));
 
         return result;
     }

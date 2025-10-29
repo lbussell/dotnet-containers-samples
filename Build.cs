@@ -23,16 +23,28 @@ app.Add("install", async () =>
 
 // Remove all generated sample templates
 app.Add("clean-samples", async () =>
-    await RunAsync($"get-childitem {SamplesDir} | foreach-object {{ remove-item -r -fo $_.fullname }}"));
+    await RunAsync($"pwsh -c 'get-childitem {SamplesDir} | foreach-object {{ remove-item -r -fo $_.fullname }}'"));
 
 // Generate samples from templates
 app.Add("generate-samples", async () =>
 {
-    await RunAsync($"dotnet new container-console --force                    -o {SamplesDir}/ConsoleApp");
-    await RunAsync($"dotnet new container-console --force --distroless       -o {SamplesDir}/ConsoleAppDistroless");
-    await RunAsync($"dotnet new container-console --force --self-contained   -o {SamplesDir}/ConsoleAppSelfContained");
-    await RunAsync($"dotnet new container-console --force --aot              -o {SamplesDir}/ConsoleAppNativeAot");
-    await RunAsync($"dotnet new container-console --force --distroless --aot -o {SamplesDir}/ConsoleAppDistrolessAot");
+    IEnumerable<Sample> samples = [
+        new("ConsoleApp",              PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
+        new("ConsoleAppDistroless",    PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
+        new("ConsoleAppSelfContained", PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
+        new("ConsoleAppNativeAot",     PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
+        new("ConsoleAppDistrolessAot", PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
+    ];
+
+    var command = "dotnet";
+    IEnumerable<string> args = ["new", "container-console", "--force"];
+    foreach (var sample in samples)
+    {
+        await RunAsync(command, [.. args, .. sample.GetOptions(SamplesDir)],
+            onStandardOutput: Console.WriteLine,
+            onStandardError: Console.Error.WriteLine,
+            logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
+    }
 });
 
 // Build all samples
@@ -52,3 +64,36 @@ app.Add("stop-registry", async () =>
     await RunAsync($"docker stop {RegistryName}"));
 
 app.Run(args);
+
+record Sample(string Name, PublishType PublishType, bool Distroless, bool Globalization, string Description)
+{
+    public IEnumerable<string> GetOptions(string samplesDir)
+    {
+        List<string> options = [];
+        options.AddRange("-o", $"{samplesDir}/{Name}");
+
+        if (PublishType == PublishType.NativeAot)
+        {
+            options.Add("--aot");
+        }
+        else if (PublishType == PublishType.SelfContained)
+        {
+            options.Add("--self-contained");
+        }
+
+        if (Distroless)
+        {
+            options.Add("--distroless");
+        }
+
+        options.AddRange("--description", Description);
+        return options;
+    }
+};
+
+enum PublishType
+{
+    FrameworkDependent,
+    SelfContained,
+    NativeAot,
+}

@@ -1,0 +1,10 @@
+{
+  "description": "Framework-dependent console app with distroless base image",
+  "selfContained": false,
+  "nativeAot": false,
+  "distroless": true,
+  "baseImageOS": "noble",
+  "baseImageTag": "10.0-noble-chiseled",
+  "baseImageRepo": "runtime",
+  "sdkImageTag": "10.0-noble"
+}

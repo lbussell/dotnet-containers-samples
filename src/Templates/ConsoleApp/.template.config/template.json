@@ -12,6 +12,13 @@
   "sourceName": "ConsoleApp",
   "preferNameDirectory": true,
   "symbols": {
+    "description": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "",
+      "replaces": "DESCRIPTION",
+      "description": "A short description of the application"
+    },
     "self-contained": {
       "type": "parameter",
       "datatype": "bool",
@@ -34,6 +41,7 @@
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "noble",
+      "replaces": "BASE_IMAGE_OS",
       "choices": [
         {
           "choice": "noble",
@@ -143,6 +151,63 @@
           {
             "condition": "(baseImageOS == 'nanoserver')",
             "value": "10.0-nanoserver-ltsc2022"
+          }
+        ]
+      }
+    },
+    "selfContainedValue": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "SELF_CONTAINED_VALUE",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(self-contained)",
+            "value": "true"
+          },
+          {
+            "condition": "(!self-contained)",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    "aotValue": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "AOT_VALUE",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(aot)",
+            "value": "true"
+          },
+          {
+            "condition": "(!aot)",
+            "value": "false"
+          }
+        ]
+      }
+    },
+    "distrolessValue": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "DISTROLESS_VALUE",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(distroless)",
+            "value": "true"
+          },
+          {
+            "condition": "(!distroless)",
+            "value": "false"
           }
         ]
       }

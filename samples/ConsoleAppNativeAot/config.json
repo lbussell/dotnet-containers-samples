@@ -1,0 +1,10 @@
+{
+  "description": "Native AOT compiled console app",
+  "selfContained": false,
+  "nativeAot": true,
+  "distroless": false,
+  "baseImageOS": "noble",
+  "baseImageTag": "10.0-noble",
+  "baseImageRepo": "runtime-deps",
+  "sdkImageTag": "10.0-noble-aot"
+}

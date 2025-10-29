@@ -1,0 +1,10 @@
+{
+  "description": "DESCRIPTION",
+  "selfContained": SELF_CONTAINED_VALUE,
+  "nativeAot": AOT_VALUE,
+  "distroless": DISTROLESS_VALUE,
+  "baseImageOS": "BASE_IMAGE_OS",
+  "baseImageTag": "BASE_IMAGE_TAG",
+  "baseImageRepo": "BASE_IMAGE_REPO",
+  "sdkImageTag": "SDK_IMAGE_TAG"
+}
