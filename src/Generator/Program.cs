@@ -1,68 +1,87 @@
 ﻿// SPDX-FileCopyrightText: Copyright (c) 2025 Logan Bussell
 // SPDX-License-Identifier: MIT
 
+using ConsoleAppFramework;
+
 using Generator;
 using Generator.Markdown;
 using Generator.Report;
 
-const string ReportFile = "README.Report.md";
-const string ReportTemplateFilePath = "src/Templates/Report.md";
-const bool ForceBuild = false;
+var app = ConsoleApp.Create();
+app.Add<GeneratorApp>();
+app.Run(args);
 
-if (args.Length == 0)
+class GeneratorApp
 {
-    const string usage = """
+    /// <summary>
+    /// Builds all sample container images
+    /// </summary>
+    /// <param name="samplesDir">Directory where samples are located</param>
+    /// <param name="registry">Sample images will be pushed to this registry</param>
+    /// <param name="noCache">Pass --no-cache argument to Docker builds</param>
+    public async Task BuildSamples(string samplesDir, string registry, bool noCache = false)
+    {
+        var samplesToBuild = FindLocalSamples(samplesDir, registry);
 
-        Usage: Generator <registry>
+        Console.WriteLine("\nSamples to build:");
+        Console.WriteLine(string.Join(Environment.NewLine, samplesToBuild));
 
-        <registry> - the container registry to which images will be pushed.
-            It's needed in order to calculate the compressed image size of each sample image.
-            You must be authenticated to the registry before running this tool.
+        var sampleBuilder = new SampleBuilder();
+        var builtSamples = new List<SampleImage>();
+        foreach (var sample in samplesToBuild)
+        {
+            var builtSample = await sampleBuilder.BuildAsync(sample, noCache);
+            builtSamples.Add(builtSample);
+        }
 
-        """;
+        Console.WriteLine("\nBuilt samples:");
+        Console.WriteLine(string.Join(Environment.NewLine, builtSamples));
+    }
 
-    Console.WriteLine(usage);
-    Environment.Exit(1);
+    /// <summary>
+    /// Fetches built image manifests from the registry and generates a markdown report.
+    /// </summary>
+    /// <param name="samplesDir">Directory where samples are located</param>
+    /// <param name="registry">Registry where sample images are located</param>
+    /// <param name="templateFile">Path to the report template file</param>
+    /// <param name="output">The generated report will be written to this file</param>
+    public async Task GenerateReport(string samplesDir, string registry, string templateFile, string output)
+    {
+        var reportTemplateContent = File.ReadAllText(templateFile);
+        var reportTemplate = ReportTemplate.Create(reportTemplateContent);
+
+        var samplesToQuery = FindLocalSamples(samplesDir, registry);
+        Console.WriteLine("\nFound samples:");
+        Console.WriteLine(string.Join(Environment.NewLine, samplesToQuery));
+
+        var sampleManifests = new List<RemoteManifestInfo>();
+        foreach (var sample in samplesToQuery)
+        {
+            RemoteManifestInfo sampleManifest = await Docker.GetRemoteManifestAsync(sample.ImageTag);
+            sampleManifests.Add(sampleManifest);
+        }
+
+        IEnumerable<(SampleAppInfo AppInfo, RemoteManifestInfo Manifest)> sampleImages = samplesToQuery.Zip(sampleManifests);
+
+        IEnumerable<TableColumn> columns = [new("Name"), new("Compressed Size", Alignment.Right)];
+        var rows = sampleImages.Select(sample => new[] { sample.AppInfo.Name, sample.Manifest.CompressedSize.ToString() });
+        var tableBuilder = new MarkdownTableBuilder()
+            .WithColumns(columns)
+            .AddRows(rows);
+
+        var markdownTable = tableBuilder.Build();
+        var reportData = new ReportTemplateData(Table: markdownTable);
+        var reportContent = reportTemplate.Render(data: reportData);
+        File.WriteAllText(output, reportContent);
+
+        Console.WriteLine($"\nWrote report to {output}");
+    }
+
+    private IEnumerable<SampleAppInfo> FindLocalSamples(string samplesDir, string registry)
+    {
+        return Directory.GetDirectories(samplesDir)
+            .Select(directory => new DirectoryInfo(directory))
+            .Select(directoryInfo => SampleAppInfo.FromDirectory(directoryInfo, registry));
+
+    }
 }
-
-var registry = args[0];
-
-// Load template from file early to fail fast if it doesn't exist
-var reportTemplateContent = File.ReadAllText(ReportTemplateFilePath);
-var reportTemplate = ReportTemplate.Create(reportTemplateContent);
-
-// Find all samples in the samples/ directory
-var samplesToBuild =
-    Directory.GetDirectories("samples")
-        .Select(directory => new DirectoryInfo(directory))
-        .Select(directoryInfo => SampleAppInfo.FromDirectory(directoryInfo, registry));
-
-Console.WriteLine();
-Console.WriteLine("Samples to build:");
-Console.WriteLine(string.Join(Environment.NewLine, samplesToBuild));
-
-var sampleBuilder = new SampleBuilder();
-var builtSamples = new List<SampleImage>();
-foreach (var sample in samplesToBuild)
-{
-    var builtSample = await sampleBuilder.BuildAsync(sample, forceBuild: ForceBuild);
-    builtSamples.Add(builtSample);
-}
-
-Console.WriteLine();
-Console.WriteLine("Built samples:");
-Console.WriteLine(string.Join(Environment.NewLine, builtSamples));
-
-IEnumerable<TableColumn> columns = [new("Name"), new("Compressed Size", Alignment.Right)];
-var rows = builtSamples.Select(sample => new[] { sample.AppInfo.Name, sample.CompressedSize.ToString() });
-var tableBuilder = new MarkdownTableBuilder()
-    .WithColumns(columns)
-    .AddRows(rows);
-
-var markdownTable = tableBuilder.Build();
-var reportData = new ReportTemplateData(Table: markdownTable);
-var reportContent = reportTemplate.Render(data: reportData);
-File.WriteAllText(ReportFile, reportContent);
-
-Console.WriteLine();
-Console.WriteLine($"Wrote report to {ReportFile}");

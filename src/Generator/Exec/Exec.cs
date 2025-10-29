@@ -12,10 +12,12 @@ public static class Exec
         string fileName,
         IEnumerable<string>? arguments = null,
         Action<string?>? onStandardOutput = null,
-        Action<string?>? onStandardError = null)
+        Action<string?>? onStandardError = null,
+        Action<string?>? logCommand = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
         arguments ??= [];
+        logCommand?.Invoke($"{fileName} {string.Join(' ', arguments)}");
 
         var processStartInfo = new ProcessStartInfo
         {
@@ -70,5 +72,17 @@ public static class Exec
         var standardOutput = standardOutputBuilder.ToString();
         var standardError = standardErrorBuilder.ToString();
         return new ProcessResult(process.ExitCode, elapsed, standardOutput, standardError);
+    }
+
+    public static async Task<ProcessResult> RunAsync(string command)
+    {
+        var commandParts = command.Split(' ');
+        var result = await RunAsync(
+            fileName: commandParts.First(),
+            arguments: commandParts.Skip(1),
+            onStandardOutput: Console.WriteLine,
+            onStandardError: Console.Error.WriteLine);
+
+        return result;
     }
 }

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Copyright (c) 2025 Logan Bussell
 // SPDX-License-Identifier: MIT
 
-using System.Text.Json;
 using System.Text.Json.Nodes;
+
+using Generator.Exec;
 
 using static Generator.Exec.Exec;
 
@@ -10,69 +11,64 @@ namespace Generator;
 
 internal sealed class Docker
 {
-    public static async Task<DockerBuildResult> Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false, bool forceBuild = false)
-    {
-        var existingManifestResult = await GetManifestAsync(tags.First());
-        if (existingManifestResult is { Status: ManifestStatus.Found } && !forceBuild)
-        {
-            Console.WriteLine($"Image '{tags.First()}' already exists in the registry. Skipping build.");
-            var existingBuildResult = await GetBuildResultAsync(tags.First());
-            return existingBuildResult;
-        }
+    const string DockerRuntime = "docker";
 
+    public static async Task<RemoteManifestInfo> Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false, bool noCache = false)
+    {
         IEnumerable<string> tagArgs = tags.SelectMany<string, string>(tag => ["-t", tag]);
 
-        var result = await RunAsync(
-            fileName: "docker",
-            arguments: ["build", "--push", "--progress=plain", .. tagArgs, contextDir.FullName],
-            onStandardOutput: line => Console.WriteLine($"[{contextDir.Name}] {line}"),
-            onStandardError: line => Console.Error.WriteLine($"[{contextDir.Name}] {line}"));
+        List<string> arguments = ["build", "--progress=plain"];
+        if (push) arguments.Add("--push");
+        if (noCache) arguments.Add("--no-cache");
+        arguments.AddRange(tagArgs);
+        arguments.Add(contextDir.FullName);
 
+        var result = await RunDockerAsync(arguments);
         if (result.ExitCode != 0)
         {
             throw new Exception($"Docker build failed with exit code {result.ExitCode}");
         }
 
-        var buildResult = await GetBuildResultAsync(tags.First());
+        var buildResult = await GetRemoteManifestAsync(tags.First());
         return buildResult;
     }
 
-    public static async Task<DockerBuildResult> GetBuildResultAsync(string remoteImageTag)
+    public static async Task<RemoteManifestInfo> GetRemoteManifestAsync(string remoteImageTag)
     {
-        var manifestResult = await GetManifestAsync(remoteImageTag);
-        if (manifestResult.Status != ManifestStatus.Found)
+        var manifestJson = await FetchManifestJson(remoteImageTag);
+        var mediaType = manifestJson["mediaType"]?.GetValue<string>() ?? "";
+
+        // If the manifest is an index, find the first available platform-specific manifest
+        if (mediaType == OciMediaTypes.ImageIndex)
         {
-            throw new InvalidOperationException($"Failed to retrieve manifest for image '{remoteImageTag}': {manifestResult.Status}");
+            var manifests = manifestJson["manifests"]?.AsArray() ?? [];
+            var platformManifest = manifests.First(manifest =>
+                manifest?["platform"]?["architecture"]?.GetValue<string>() != "unknown");
+            var platformDigest = platformManifest?["digest"]?.GetValue<string>() ?? "";
+            manifestJson = await FetchManifestJson($"{remoteImageTag}@{platformDigest}");
         }
 
-        var manifest = manifestResult.Manifest;
-        var imageLayers = manifest["layers"]?.AsArray() ?? [];
+        var imageLayers = manifestJson["layers"]?.AsArray() ?? [];
         long totalSize = imageLayers.Sum(layer => layer?["size"]?.GetValue<long>() ?? 0);
-        var digest = manifest["config"]?["digest"]?.GetValue<string>() ?? "";
-        return new DockerBuildResult(digest, new ImageSize(totalSize));
+        var digest = manifestJson["config"]?["digest"]?.GetValue<string>() ?? "";
+        return new RemoteManifestInfo(digest, new ImageSize(totalSize));
     }
 
-    private static async Task<ManifestResponse> GetManifestAsync(string imageTag)
+    private static async Task<JsonNode> FetchManifestJson(string imageTag)
     {
-        var result = await RunAsync("docker", ["buildx", "imagetools", "inspect", "--raw", imageTag]);
-
-        if (result.StandardOutput.Contains("not found"))
-        {
-            return new ManifestResponse(new JsonObject(), ManifestStatus.NotFound);
-        }
-
+        var result = await RunDockerAsync(["buildx", "imagetools", "inspect", "--raw", imageTag]);
         var manifestJson = JsonNode.Parse(result.StandardOutput);
-        return manifestJson is null
-            ? new ManifestResponse(new JsonObject(), ManifestStatus.Error)
-            : new ManifestResponse(manifestJson, ManifestStatus.Found);
+        return manifestJson
+            ?? throw new InvalidOperationException($"Failed to parse manifest content for image '{imageTag}'");
     }
 
-    private sealed record ManifestResponse(JsonNode Manifest, ManifestStatus Status);
-
-    private enum ManifestStatus
+    private static Task<ProcessResult> RunDockerAsync(IEnumerable<string> arguments, bool suppressConsoleOutput = false)
     {
-        Found,
-        NotFound,
-        Error,
+        return RunAsync(
+            fileName: DockerRuntime,
+            arguments: arguments,
+            onStandardOutput: suppressConsoleOutput ? null : Console.WriteLine,
+            onStandardError: suppressConsoleOutput ? null : Console.Error.WriteLine,
+            logCommand: cmd => Console.WriteLine($"Executing: `{cmd}`"));
     }
 }

@@ -3,4 +3,4 @@
 
 namespace Generator;
 
-internal sealed record DockerBuildResult(string Digest, ImageSize CompressedSize);
+internal sealed record RemoteManifestInfo(string Digest, ImageSize CompressedSize);
