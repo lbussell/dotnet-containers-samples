@@ -1,13 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Logan Bussell",
-  "classifications": ["Console"],
-  "name": "Containerized Console App",
-  "identity": "Microsoft.DotNet.Containers.Samples.ConsoleApp",
-  "shortName": "container-app-console",
+  "classifications": ["Web"],
+  "name": "Containerized Web API",
+  "identity": "Microsoft.DotNet.Containers.Samples.WebApi",
+  "shortName": "container-app-webapi",
   "tags": {
     "language": "C#",
-    "type":"project"
+    "type": "project"
   },
   "sourceName": "ConsoleApp",
   "preferNameDirectory": true,
@@ -117,7 +117,7 @@
           },
           {
             "condition": "(!self-contained && !aot)",
-            "value": "runtime"
+            "value": "aspnet"
           }
         ]
       }
@@ -157,63 +157,6 @@
           {
             "condition": "(baseImageOS == 'nanoserver')",
             "value": "10.0-nanoserver-ltsc2022"
-          }
-        ]
-      }
-    },
-    "selfContainedValue": {
-      "type": "generated",
-      "generator": "switch",
-      "replaces": "SELF_CONTAINED_VALUE",
-      "parameters": {
-        "evaluator": "C++",
-        "datatype": "string",
-        "cases": [
-          {
-            "condition": "(self-contained)",
-            "value": "true"
-          },
-          {
-            "condition": "(!self-contained)",
-            "value": "false"
-          }
-        ]
-      }
-    },
-    "aotValue": {
-      "type": "generated",
-      "generator": "switch",
-      "replaces": "AOT_VALUE",
-      "parameters": {
-        "evaluator": "C++",
-        "datatype": "string",
-        "cases": [
-          {
-            "condition": "(aot)",
-            "value": "true"
-          },
-          {
-            "condition": "(!aot)",
-            "value": "false"
-          }
-        ]
-      }
-    },
-    "distrolessValue": {
-      "type": "generated",
-      "generator": "switch",
-      "replaces": "DISTROLESS_VALUE",
-      "parameters": {
-        "evaluator": "C++",
-        "datatype": "string",
-        "cases": [
-          {
-            "condition": "(distroless)",
-            "value": "true"
-          },
-          {
-            "condition": "(!distroless)",
-            "value": "false"
           }
         ]
       }
