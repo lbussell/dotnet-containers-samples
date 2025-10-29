@@ -1,10 +1,7 @@
 {
-  "description": "Framework-dependent console app",
-  "selfContained": false,
-  "nativeAot": false,
-  "distroless": false,
-  "baseImageOS": "noble",
-  "baseImageTag": "10.0-noble",
-  "baseImageRepo": "runtime",
-  "sdkImageTag": "10.0-noble"
+  "Name": "ConsoleApp",
+  "PublishType": "FrameworkDependent",
+  "Distroless": false,
+  "Globalization": false,
+  "Description": "Framework-dependent console app"
 }

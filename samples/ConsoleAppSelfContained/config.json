@@ -1,10 +1,7 @@
 {
-  "description": "Self-contained console app with trimming and ReadyToRun",
-  "selfContained": true,
-  "nativeAot": false,
-  "distroless": false,
-  "baseImageOS": "noble",
-  "baseImageTag": "10.0-noble",
-  "baseImageRepo": "runtime-deps",
-  "sdkImageTag": "10.0-noble"
+  "Name": "ConsoleAppSelfContained",
+  "PublishType": "SelfContained",
+  "Distroless": false,
+  "Globalization": false,
+  "Description": "Self-contained console app with trimming and ReadyToRun"
 }

@@ -1,10 +1,7 @@
 {
-  "description": "Native AOT compiled console app with distroless base image",
-  "selfContained": false,
-  "nativeAot": true,
-  "distroless": true,
-  "baseImageOS": "noble",
-  "baseImageTag": "10.0-noble-chiseled",
-  "baseImageRepo": "runtime-deps",
-  "sdkImageTag": "10.0-noble-aot"
+  "Name": "ConsoleAppDistrolessAot",
+  "PublishType": "NativeAot",
+  "Distroless": true,
+  "Globalization": false,
+  "Description": "Distroless native AOT console app"
 }

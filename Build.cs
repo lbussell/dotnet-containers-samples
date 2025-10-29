@@ -4,6 +4,9 @@
 #:package ConsoleAppFramework@5.6.1
 #:project src/Generator/Generator.csproj
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 using ConsoleAppFramework;
 using Generator;
 using static Generator.Exec.Exec;
@@ -48,6 +51,16 @@ class Build
                 onStandardOutput: Console.WriteLine,
                 onStandardError: Console.Error.WriteLine,
                 logCommand: cmd => Console.WriteLine($"Running command: {cmd}"));
+
+            var configPath = Path.Combine(sample.GetOutputPath(SamplesDir), "config.json");
+            var configContent = JsonSerializer.Serialize(sample, typeof(SampleDefinition), context: AppJsonSerializerContext.Default);
+            File.WriteAllText(configPath, configContent);
         }
     }
+}
+
+[JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
+[JsonSerializable(typeof(SampleDefinition))]
+internal partial class AppJsonSerializerContext : JsonSerializerContext
+{
 }
