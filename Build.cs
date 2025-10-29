@@ -5,6 +5,7 @@
 #:project src/Generator/Generator.csproj
 
 using ConsoleAppFramework;
+using Generator;
 using static Generator.Exec.Exec;
 
 const string RegistryName = "dotnet-samples-registry";
@@ -90,10 +91,3 @@ record Sample(string Name, PublishType PublishType, bool Distroless, bool Global
         return options;
     }
 };
-
-enum PublishType
-{
-    FrameworkDependent,
-    SelfContained,
-    NativeAot,
-}
