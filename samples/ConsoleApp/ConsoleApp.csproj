@@ -5,6 +5,10 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Learn more about globalization:
+         https://learn.microsoft.com/en-us/dotnet/core/extensions/globalization-icu -->
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
 </Project>

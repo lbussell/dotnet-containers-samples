@@ -1,6 +1,6 @@
 # Learn about building .NET container images:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-FROM mcr.microsoft.com/dotnet/sdk:10.0-noble-aot AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-aot AS build
 WORKDIR /source
 
 # Build the app

@@ -4,20 +4,44 @@
 
 ## Image Sizes
 
-| Name                              | Publish Type          | Distroless | Globalization | Compressed Size |
-| --------------------------------- | --------------------- | ---------- | ------------- | --------------: |
-| ConsoleApp                        | [Framework-dependent] | ✖️ No      | ✖️ No         |        80.30 MB |
-| ConsoleAppDistroless              | [Framework-dependent] | ✅ Yes      | ✖️ No         |        40.63 MB |
-| ConsoleAppSelfContained           | [Self-contained]      | ✖️ No      | ✖️ No         |        53.29 MB |
-| ConsoleAppSelfContainedDistroless | [Self-contained]      | ✅ Yes      | ✖️ No         |        13.62 MB |
-| ConsoleAppNativeAot               | [Native AOT]          | ✖️ No      | ✖️ No         |        48.18 MB |
-| ConsoleAppDistrolessAot           | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.51 MB |
-| WebApi                            | [Framework-dependent] | ✖️ No      | ✖️ No         |        92.48 MB |
-| WebApiDistroless                  | [Framework-dependent] | ✅ Yes      | ✖️ No         |        52.81 MB |
-| WebApiSelfContained               | [Self-contained]      | ✖️ No      | ✖️ No         |        61.53 MB |
-| WebApiSelfContainedDistroless     | [Self-contained]      | ✅ Yes      | ✖️ No         |        21.86 MB |
-| WebApiNativeAot                   | [Native AOT]          | ✖️ No      | ✖️ No         |        51.27 MB |
-| WebApiNativeAotDistroless         | [Native AOT]          | ✅ Yes      | ✖️ No         |        11.60 MB |
+| Name                                 | OS     | Publish Type          | Distroless | Globalization | Compressed Size |
+| ------------------------------------ | ------ | --------------------- | ---------- | ------------- | --------------: |
+| ConsoleApp                           | Ubuntu | [Framework-dependent] | ✖️ No      | ✖️ No         |        80.30 MB |
+| ConsoleAppIcu                        | Ubuntu | [Framework-dependent] | ✖️ No      | ✅ Yes         |        80.30 MB |
+| ConsoleAppDistroless                 | Ubuntu | [Framework-dependent] | ✅ Yes      | ✖️ No         |        40.63 MB |
+| ConsoleAppDistrolessIcu              | Ubuntu | [Framework-dependent] | ✅ Yes      | ✅ Yes         |        55.49 MB |
+| ConsoleAppSelfContained              | Ubuntu | [Self-contained]      | ✖️ No      | ✖️ No         |        53.17 MB |
+| ConsoleAppSelfContainedIcu           | Ubuntu | [Self-contained]      | ✖️ No      | ✅ Yes         |        53.29 MB |
+| ConsoleAppSelfContainedDistroless    | Ubuntu | [Self-contained]      | ✅ Yes      | ✖️ No         |        13.50 MB |
+| ConsoleAppSelfContainedDistrolessIcu | Ubuntu | [Self-contained]      | ✅ Yes      | ✅ Yes         |        28.48 MB |
+| ConsoleAppNativeAot                  | Ubuntu | [Native AOT]          | ✖️ No      | ✖️ No         |        47.97 MB |
+| ConsoleAppNativeAotIcu               | Ubuntu | [Native AOT]          | ✖️ No      | ✅ Yes         |        48.18 MB |
+| ConsoleAppNativeAotDistroless        | Ubuntu | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.30 MB |
+| ConsoleAppNativeAotDistrolessIcu     | Ubuntu | [Native AOT]          | ✅ Yes      | ✅ Yes         |        23.37 MB |
+| WebApi                               | Ubuntu | [Framework-dependent] | ✖️ No      | ✖️ No         |        92.48 MB |
+| WebApiIcu                            | Ubuntu | [Framework-dependent] | ✖️ No      | ✅ Yes         |        92.48 MB |
+| WebApiDistroless                     | Ubuntu | [Framework-dependent] | ✅ Yes      | ✖️ No         |        52.81 MB |
+| WebApiDistrolessIcu                  | Ubuntu | [Framework-dependent] | ✅ Yes      | ✅ Yes         |        67.68 MB |
+| WebApiSelfContained                  | Ubuntu | [Self-contained]      | ✖️ No      | ✖️ No         |        61.53 MB |
+| WebApiSelfContainedIcu               | Ubuntu | [Self-contained]      | ✖️ No      | ✅ Yes         |        61.63 MB |
+| WebApiSelfContainedDistroless        | Ubuntu | [Self-contained]      | ✅ Yes      | ✖️ No         |        21.86 MB |
+| WebApiSelfContainedDistrolessIcu     | Ubuntu | [Self-contained]      | ✅ Yes      | ✅ Yes         |        36.82 MB |
+| WebApiNativeAot                      | Ubuntu | [Native AOT]          | ✖️ No      | ✖️ No         |        51.27 MB |
+| WebApiNativeAotIcu                   | Ubuntu | [Native AOT]          | ✖️ No      | ✅ Yes         |        51.36 MB |
+| WebApiNativeAotDistroless            | Ubuntu | [Native AOT]          | ✅ Yes      | ✖️ No         |        11.60 MB |
+| WebApiNativeAotDistrolessIcu         | Ubuntu | [Native AOT]          | ✅ Yes      | ✅ Yes         |        26.56 MB |
+| ConsoleApp                           | Alpine | [Framework-dependent] | ✖️ No      | ✖️ No         |        39.75 MB |
+| ConsoleAppIcu                        | Alpine | [Framework-dependent] | ✖️ No      | ✅ Yes         |        54.22 MB |
+| ConsoleAppSelfContained              | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        47.66 MB |
+| ConsoleAppSelfContainedIcu           | Alpine | [Self-contained]      | ✖️ No      | ✅ Yes         |        62.26 MB |
+| ConsoleAppNativeAot                  | Alpine | [Native AOT]          | ✖️ No      | ✖️ No         |        42.45 MB |
+| ConsoleAppNativeAotIcu               | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        57.14 MB |
+| WebApi                               | Alpine | [Framework-dependent] | ✖️ No      | ✖️ No         |        51.93 MB |
+| WebApiIcu                            | Alpine | [Framework-dependent] | ✖️ No      | ✅ Yes         |        66.40 MB |
+| WebApiSelfContained                  | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        68.18 MB |
+| WebApiSelfContainedIcu               | Alpine | [Self-contained]      | ✖️ No      | ✅ Yes         |        82.75 MB |
+| WebApiNativeAot                      | Alpine | [Native AOT]          | ✖️ No      | ✖️ No         |        57.92 MB |
+| WebApiNativeAotIcu                   | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        72.49 MB |
 
 For more information on .NET image variants and AOT images, please see the following documentation:
 

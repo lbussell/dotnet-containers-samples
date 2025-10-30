@@ -13,15 +13,15 @@ public class GeneratorApp
         Console.WriteLine(string.Join(Environment.NewLine, samples));
 
         var sampleBuilder = new SampleBuilder();
-        var builtSamples = new List<SampleImage>();
+        var allBuiltSamples = new List<SampleImage>();
         foreach (var sample in samples)
         {
-            var builtSample = await sampleBuilder.BuildAsync(sample, registry, noCache);
-            builtSamples.Add(builtSample);
+            var builtSamples = await sampleBuilder.BuildAsync(sample, registry, noCache);
+            allBuiltSamples.AddRange(builtSamples);
         }
 
         Console.WriteLine("\nBuilt samples:");
-        Console.WriteLine(string.Join(Environment.NewLine, builtSamples));
+        Console.WriteLine(string.Join(Environment.NewLine, allBuiltSamples));
     }
 
     public async Task GenerateReport(IEnumerable<SampleDefinition> samples, string registry, string templateFile, string output)
@@ -32,19 +32,21 @@ public class GeneratorApp
         Console.WriteLine("\nFound samples:");
         Console.WriteLine(string.Join(Environment.NewLine, samples));
 
-        var sampleManifests = new List<RemoteManifestInfo>();
+        var sampleImages = new List<(SampleDefinition Definition, SampleDockerfileInfo Dockerfile, RemoteManifestInfo Manifest)>();
         foreach (var sample in samples)
         {
-            var imageName = sample.GetFullImageName(registry);
-            RemoteManifestInfo sampleManifest = await Docker.GetRemoteManifestAsync(imageName);
-            sampleManifests.Add(sampleManifest);
+            var dockerfileInfos = sample.GetDockerfileInfos(registry);
+            foreach (var dockerfile in dockerfileInfos)
+            {
+                RemoteManifestInfo manifest = await Docker.GetRemoteManifestAsync(dockerfile.FullImageName);
+                sampleImages.Add((sample, dockerfile, manifest));
+            }
         }
-
-        IEnumerable<(SampleDefinition AppInfo, RemoteManifestInfo Manifest)> sampleImages = samples.Zip(sampleManifests);
 
         IEnumerable<TableColumn> columns =
         [
             new("Name"),
+            new("OS"),
             new("Publish Type"),
             new("Distroless"),
             new("Globalization"),
@@ -54,14 +56,17 @@ public class GeneratorApp
         const string yes = "✅ Yes";
         const string no = "✖️ No";
 
-        var rows = sampleImages.Select(sample => new[]
-        {
-            sample.AppInfo.Name,
-            sample.AppInfo.PublishTypeLink,
-            sample.AppInfo.Distroless ? yes : no,
-            sample.AppInfo.Globalization ? yes : no,
-            sample.Manifest.CompressedSize.ToString()
-        });
+        var rows = sampleImages
+            .OrderByDescending(sample => sample.Dockerfile.BaseOS)
+            .Select(sample => new[]
+            {
+                sample.Definition.Name,
+                sample.Dockerfile.BaseOS,
+                sample.Definition.PublishTypeLink,
+                sample.Definition.Distroless ? yes : no,
+                sample.Definition.Globalization ? yes : no,
+                sample.Manifest.CompressedSize.ToString()
+            });
 
         var tableBuilder = new MarkdownTableBuilder()
             .WithColumns(columns)

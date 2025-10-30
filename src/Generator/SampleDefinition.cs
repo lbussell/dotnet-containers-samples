@@ -3,6 +3,8 @@
 
 namespace Generator;
 
+public record SampleDockerfileInfo(string DockerfilePath, string BaseOS, string FullImageName);
+
 public record SampleDefinition(string ParentDirectory, string TemplateName, string Name, PublishType PublishType, bool Distroless, bool Globalization, string Description)
 {
     private const string DotNetVersion = "10.0";
@@ -10,8 +12,6 @@ public record SampleDefinition(string ParentDirectory, string TemplateName, stri
     public string ImageRepo => $"dotnet-containers-samples/{Name.FromPascalCaseToKebabCase()}";
     public string ImageTag => DotNetVersion;
     public string OutputPath => Path.Combine(ParentDirectory, Name);
-    public string ConfigPath => Path.Combine(OutputPath, "config.json");
-    public string GetFullImageName(string registry) => $"{registry}/{ImageRepo}:{ImageTag}";
 
     public string PublishTypeLink => PublishType switch
     {
@@ -20,6 +20,30 @@ public record SampleDefinition(string ParentDirectory, string TemplateName, stri
         PublishType.NativeAot => "[Native AOT]",
         _ => throw new ArgumentOutOfRangeException()
     };
+
+    public IEnumerable<SampleDockerfileInfo> GetDockerfileInfos(string registry)
+    {
+        List<SampleDockerfileInfo> buildInfos = new(2)
+        {
+            new SampleDockerfileInfo(
+                DockerfilePath: Path.Combine(OutputPath, "Dockerfile"),
+                BaseOS: "Ubuntu",
+                FullImageName: GetFullImageName(registry)),
+        };
+
+        if (!Distroless)
+        {
+            buildInfos.Add(
+                new SampleDockerfileInfo(
+                    DockerfilePath: Path.Combine(OutputPath, "Dockerfile.alpine"),
+                    BaseOS: "Alpine",
+                    FullImageName: GetFullImageName(registry) + "-alpine"));
+        }
+
+        return buildInfos;
+    }
+
+    private string GetFullImageName(string registry) => $"{registry}/{ImageRepo}:{ImageTag}";
 
     public IEnumerable<string> GetOptions()
     {
@@ -38,6 +62,11 @@ public record SampleDefinition(string ParentDirectory, string TemplateName, stri
         if (Distroless)
         {
             options.Add("--distroless");
+        }
+
+        if (Globalization)
+        {
+            options.Add("--globalization");
         }
 
         options.AddRange("--description", Description);

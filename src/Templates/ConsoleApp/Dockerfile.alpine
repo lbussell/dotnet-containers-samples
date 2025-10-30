@@ -1,0 +1,48 @@
+# Learn about building .NET container images:
+# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
+#if (!aot)
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+ARG TARGETARCH
+#else
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine-aot AS build
+#endif
+WORKDIR /source
+
+#if (!aot)
+# Copy project file and restore as distinct layers
+COPY --link *.csproj .
+RUN dotnet restore -a $TARGETARCH
+
+#endif
+# Copy source code and publish app
+COPY --link . .
+#if (!aot)
+RUN dotnet publish -a $TARGETARCH --no-restore -o /app
+#else
+RUN dotnet publish -o /app
+#endif
+
+
+# Runtime stage
+# Runtime stage
+#if (globalization && (aot || self-contained))
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
+#endif
+FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine
+#if (globalization)
+
+# Enable globalization on Alpine Linux
+ENV \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+RUN apk add --no-cache \
+    icu-data-full \
+    icu-libs \
+    tzdata
+
+#endif
+WORKDIR /app
+COPY --link --from=build /app .
+USER $APP_UID
+ENTRYPOINT ["./ConsoleApp"]

@@ -24,25 +24,22 @@ class Build
     private const string ConsoleTemplate = "container-app-console";
     private const string WebApiTemplate = "container-app-webapi";
 
-    private readonly IEnumerable<SampleDefinition> _consoleSamples = [
-        new(ParentDirectory: SamplesDir, TemplateName: ConsoleTemplate, Name: "ConsoleApp",                        PublishType.FrameworkDependent, Distroless: false,  Globalization: false, Description: "Framework-dependent console app"),
-        new(ParentDirectory: SamplesDir, TemplateName: ConsoleTemplate, Name: "ConsoleAppDistroless",              PublishType.FrameworkDependent, Distroless: true,   Globalization: false, Description: "Framework-dependent console app with distroless base image"),
-        new(ParentDirectory: SamplesDir, TemplateName: ConsoleTemplate, Name: "ConsoleAppSelfContained",           PublishType.SelfContained,      Distroless: false,  Globalization: false, Description: "Self-contained console app with trimming and ReadyToRun"),
-        new(ParentDirectory: SamplesDir, TemplateName: ConsoleTemplate, Name: "ConsoleAppSelfContainedDistroless", PublishType.SelfContained,      Distroless: true,   Globalization: false, Description: "Self-contained distroless console app"),
-        new(ParentDirectory: SamplesDir, TemplateName: ConsoleTemplate, Name: "ConsoleAppNativeAot",               PublishType.NativeAot,          Distroless: false,  Globalization: false, Description: "Native AOT console app"),
-        new(ParentDirectory: SamplesDir, TemplateName: ConsoleTemplate, Name: "ConsoleAppDistrolessAot",           PublishType.NativeAot,          Distroless: true,   Globalization: false, Description: "Distroless native AOT console app"),
-    ];
+    private IEnumerable<SampleDefinition> AllSamples => CreateSampleDefinitions();
 
-    private readonly IEnumerable<SampleDefinition> _webSamples = [
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApi",                        PublishType.FrameworkDependent, Distroless: false, Globalization: false, Description: "Framework-dependent web API"),
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiDistroless",              PublishType.FrameworkDependent, Distroless: true,  Globalization: false, Description: ""),
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiSelfContained",           PublishType.SelfContained,      Distroless: false, Globalization: false, Description: ""),
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiSelfContainedDistroless", PublishType.SelfContained,      Distroless: true,  Globalization: false, Description: ""),
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiNativeAot",               PublishType.NativeAot,          Distroless: false, Globalization: false, Description: ""),
-        new(ParentDirectory: SamplesDir, TemplateName: WebApiTemplate, Name: "WebApiNativeAotDistroless",     PublishType.NativeAot,          Distroless: true,  Globalization: false, Description: ""),
-    ];
+    private IEnumerable<SampleDefinition> CreateSampleDefinitions()
+    {
+        string[] templates = [ConsoleTemplate, WebApiTemplate];
+        PublishType[] publishTypes = [PublishType.FrameworkDependent, PublishType.SelfContained, PublishType.NativeAot];
+        bool[] distroless = [false, true];
+        bool[] globalization = [false, true];
 
-    private IEnumerable<SampleDefinition> AllSamples => [.._consoleSamples, .._webSamples];
+        return from template in templates
+               from publishType in publishTypes
+               from isDistroless in distroless
+               from hasIcu in globalization
+               let name = $"{(template == WebApiTemplate ? "WebApi" : "ConsoleApp")}{(publishType == PublishType.FrameworkDependent ? "" : publishType.ToString())}{(isDistroless ? "Distroless" : "")}{(hasIcu ? "Icu" : "")}"
+               select new SampleDefinition(SamplesDir, template, name, publishType, isDistroless, hasIcu, "");
+    }
 
     public async Task Install()
     {

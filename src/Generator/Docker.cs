@@ -13,11 +13,11 @@ internal sealed class Docker
 {
     const string DockerRuntime = "docker";
 
-    public static async Task<RemoteManifestInfo> Build(DirectoryInfo contextDir, IEnumerable<string> tags, bool push = false, bool noCache = false)
+    public static async Task<RemoteManifestInfo> Build(DirectoryInfo contextDir, string dockerfilePath, IEnumerable<string> tags, bool push = false, bool noCache = false)
     {
         IEnumerable<string> tagArgs = tags.SelectMany<string, string>(tag => ["-t", tag]);
 
-        List<string> arguments = ["build", "--progress=plain"];
+        List<string> arguments = ["build", "--progress=plain", "-f", dockerfilePath];
         if (push) arguments.Add("--push");
         if (noCache) arguments.Add("--no-cache");
         arguments.AddRange(tagArgs);

@@ -11,6 +11,58 @@
   },
   "sourceName": "ConsoleApp",
   "preferNameDirectory": true,
+  "sources": [
+    {
+      "exclude": [ "**/.template.config/**" ]
+    },
+    {
+      "exclude": [ "Dockerfile.alpine" ],
+      "modifiers": [
+        {
+          "condition": "!distroless",
+          "include": [ "Dockerfile.alpine" ]
+        }
+      ]
+    }
+  ],
+  "specialCustomOperations": {
+    "**/Dockerfile*": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "actionableIf": [ "##if" ],
+            "actionableElse": [ "##else" ],
+            "actionableElseif": [ "##elseif" ],
+            "actions": [ "uncomment", "reduceComment" ],
+            "trim": "true",
+            "wholeLine": "true",
+            "evaluator": "C++"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "#",
+            "replacement": "",
+            "id": "uncomment"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "##",
+            "replacement": "#",
+            "id": "reduceComment"
+          }
+        }
+      ]
+    }
+  },
   "symbols": {
     "description": {
       "type": "parameter",
@@ -43,66 +95,6 @@
       "defaultValue": "false",
       "description": "Enable globalization support"
     },
-    "baseImageOS": {
-      "type": "parameter",
-      "datatype": "choice",
-      "defaultValue": "noble",
-      "replaces": "BASE_IMAGE_OS",
-      "choices": [
-        {
-          "choice": "noble",
-          "description": "Ubuntu 24.04 (Noble)"
-        },
-        {
-          "choice": "alpine",
-          "description": "Alpine Linux"
-        },
-        {
-          "choice": "azurelinux",
-          "description": "Azure Linux 3.0"
-        },
-        {
-          "choice": "nanoserver",
-          "description": "Windows Nano Server LTSC 2022"
-        }
-      ],
-      "description": "The base image OS for the container"
-    },
-    "baseImageTag": {
-      "type": "generated",
-      "generator": "switch",
-      "replaces": "BASE_IMAGE_TAG",
-      "parameters": {
-        "evaluator": "C++",
-        "datatype": "string",
-        "cases": [
-          {
-            "condition": "(baseImageOS == 'noble' && distroless)",
-            "value": "10.0-noble-chiseled"
-          },
-          {
-            "condition": "(baseImageOS == 'noble' && !distroless)",
-            "value": "10.0-noble"
-          },
-          {
-            "condition": "(baseImageOS == 'alpine')",
-            "value": "10.0-alpine"
-          },
-          {
-            "condition": "(baseImageOS == 'azurelinux' && distroless)",
-            "value": "10.0-azurelinux3.0-distroless"
-          },
-          {
-            "condition": "(baseImageOS == 'azurelinux' && !distroless)",
-            "value": "10.0-azurelinux3.0"
-          },
-          {
-            "condition": "(baseImageOS == 'nanoserver')",
-            "value": "10.0-nanoserver-ltsc2022"
-          }
-        ]
-      }
-    },
     "baseImageRepo": {
       "type": "generated",
       "generator": "switch",
@@ -118,45 +110,6 @@
           {
             "condition": "(!self-contained && !aot)",
             "value": "aspnet"
-          }
-        ]
-      }
-    },
-    "sdkImageTag": {
-      "type": "generated",
-      "generator": "switch",
-      "replaces": "SDK_IMAGE_TAG",
-      "parameters": {
-        "evaluator": "C++",
-        "datatype": "string",
-        "cases": [
-          {
-            "condition": "(aot && baseImageOS == 'noble')",
-            "value": "10.0-noble-aot"
-          },
-          {
-            "condition": "(aot && baseImageOS == 'alpine')",
-            "value": "10.0-alpine-aot"
-          },
-          {
-            "condition": "(aot && baseImageOS == 'azurelinux')",
-            "value": "10.0-azurelinux3.0-aot"
-          },
-          {
-            "condition": "(!aot && baseImageOS == 'noble')",
-            "value": "10.0-noble"
-          },
-          {
-            "condition": "(!aot && baseImageOS == 'alpine')",
-            "value": "10.0-alpine"
-          },
-          {
-            "condition": "(!aot && baseImageOS == 'azurelinux')",
-            "value": "10.0-azurelinux3.0"
-          },
-          {
-            "condition": "(baseImageOS == 'nanoserver')",
-            "value": "10.0-nanoserver-ltsc2022"
           }
         ]
       }

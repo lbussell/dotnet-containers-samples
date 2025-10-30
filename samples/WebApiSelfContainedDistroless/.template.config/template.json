@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Logan Bussell",
+  "classifications": ["Web"],
+  "name": "Containerized Web API",
+  "identity": "Microsoft.DotNet.Containers.Samples.WebApi",
+  "shortName": "container-app-webapi",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "WebApiSelfContainedDistroless",
+  "preferNameDirectory": true,
+  "sources": [
+    {
+      "exclude": [ "**/.template.config/**" ]
+    },
+    {
+      "exclude": [ "Dockerfile.alpine" ],
+      "modifiers": [
+        {
+          "condition": "!distroless",
+          "include": [ "Dockerfile.alpine" ]
+        }
+      ]
+    }
+  ],
+  "specialCustomOperations": {
+    "**/Dockerfile*": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "actionableIf": [ "##if" ],
+            "actionableElse": [ "##else" ],
+            "actionableElseif": [ "##elseif" ],
+            "actions": [ "uncomment", "reduceComment" ],
+            "trim": "true",
+            "wholeLine": "true",
+            "evaluator": "C++"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "#",
+            "replacement": "",
+            "id": "uncomment"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "##",
+            "replacement": "#",
+            "id": "reduceComment"
+          }
+        }
+      ]
+    }
+  },
+  "symbols": {
+    "description": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "",
+      "replaces": "",
+      "description": "A short description of the application"
+    },
+    "self-contained": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Enable self-contained publishing with trimming and ReadyToRun"
+    },
+    "aot": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Enable Native AOT compilation for fastest startup and smallest size"
+    },
+    "distroless": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Use distroless runtime base images for minimal attack surface"
+    },
+    "globalization": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Enable globalization support"
+    },
+    "baseImageRepo": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "runtime-deps",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(self-contained || aot)",
+            "value": "runtime-deps"
+          },
+          {
+            "condition": "(!self-contained && !aot)",
+            "value": "aspnet"
+          }
+        ]
+      }
+    },
+    "stjSourceGen": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(aot || self-contained)",
+            "value": "true"
+          },
+          {
+            "condition": "(!aot && !self-contained)",
+            "value": "false"
+          }
+        ]
+      }
+    }
+  },
+  "postActions": [
+    {
+      "condition": "(self-contained && aot)",
+      "description": "Error: self-contained and aot options are mutually exclusive",
+      "manualInstructions": [
+        {
+          "text": "Cannot use both --self-contained and --aot options together. Please choose one."
+        }
+      ],
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
+      "continueOnError": false
+    },
+    {
+      "condition": "(aot && baseImageOS == 'nanoserver')",
+      "description": "Error: Native AOT is not supported on nanoserver",
+      "manualInstructions": [
+        {
+          "text": "Native AOT compilation is not supported on Windows Nano Server. Please choose a different base OS (noble, alpine, or azurelinux)."
+        }
+      ],
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D3",
+      "continueOnError": false
+    },
+    {
+      "condition": "(distroless && baseImageOS != 'noble' && baseImageOS != 'azurelinux')",
+      "description": "Error: Distroless images are only available for noble and azurelinux",
+      "manualInstructions": [
+        {
+          "text": "Distroless images are only available for Ubuntu Noble (noble) and Azure Linux (azurelinux). Please choose one of these base OS options."
+        }
+      ],
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D4",
+      "continueOnError": false
+    }
+  ]
+}

@@ -5,20 +5,29 @@ namespace Generator;
 
 internal sealed class SampleBuilder
 {
-    public async Task<SampleImage> BuildAsync(SampleDefinition sample, string registry, bool noCache = false)
+    public async Task<IEnumerable<SampleImage>> BuildAsync(SampleDefinition sample, string registry, bool noCache = false)
     {
         Console.WriteLine();
         Console.WriteLine($"Building sample: {sample.Name}");
 
-        var buildResult = await Docker.Build(
-            contextDir: new DirectoryInfo(sample.OutputPath),
-            tags: [sample.GetFullImageName(registry)],
-            push: true,
-            noCache: noCache);
+        List<SampleImage> images = [];
+        foreach (var buildInfo in sample.GetDockerfileInfos(registry))
+        {
+            Console.WriteLine($"Building image: {buildInfo.FullImageName} (Dockerfile: {buildInfo.DockerfilePath})");
+            var buildResult = await Docker.Build(
+                contextDir: new DirectoryInfo(sample.OutputPath),
+                dockerfilePath: buildInfo.DockerfilePath,
+                tags: [buildInfo.FullImageName],
+                push: true,
+                noCache: noCache);
 
-        return new SampleImage(
-            AppInfo: sample,
-            Digest: buildResult.Digest,
-            CompressedSize: buildResult.CompressedSize);
+            images.Add(
+                new SampleImage(
+                    AppInfo: sample,
+                    Digest: buildResult.Digest,
+                    CompressedSize: buildResult.CompressedSize));
+        }
+
+        return images;
     }
 }
