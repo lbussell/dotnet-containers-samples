@@ -5,7 +5,8 @@ WORKDIR /source
 
 # Copy source code and publish app
 COPY --link . .
-RUN dotnet publish -o /app
+RUN dotnet publish -o /app \
+    && rm /app/*.dbg
 
 
 # Runtime stage

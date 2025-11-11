@@ -19,7 +19,8 @@ COPY --link . .
 #if (!aot)
 RUN dotnet publish -a $TARGETARCH --no-restore -o /app
 #else
-RUN dotnet publish -o /app
+RUN dotnet publish -o /app \
+    && rm /app/*.dbg
 #endif
 
 

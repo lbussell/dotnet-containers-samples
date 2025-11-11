@@ -14,10 +14,10 @@
 | ConsoleAppSelfContainedIcu           | Ubuntu | [Self-contained]      | ✖️ No      | ✅ Yes         |        53.29 MB |
 | ConsoleAppSelfContainedDistroless    | Ubuntu | [Self-contained]      | ✅ Yes      | ✖️ No         |        13.50 MB |
 | ConsoleAppSelfContainedDistrolessIcu | Ubuntu | [Self-contained]      | ✅ Yes      | ✅ Yes         |        28.48 MB |
-| ConsoleAppNativeAot                  | Ubuntu | [Native AOT]          | ✖️ No      | ✖️ No         |        47.97 MB |
-| ConsoleAppNativeAotIcu               | Ubuntu | [Native AOT]          | ✖️ No      | ✅ Yes         |        48.18 MB |
-| ConsoleAppNativeAotDistroless        | Ubuntu | [Native AOT]          | ✅ Yes      | ✖️ No         |         8.30 MB |
-| ConsoleAppNativeAotDistrolessIcu     | Ubuntu | [Native AOT]          | ✅ Yes      | ✅ Yes         |        23.37 MB |
+| ConsoleAppNativeAot                  | Ubuntu | [Native AOT]          | ✖️ No      | ✖️ No         |        46.02 MB |
+| ConsoleAppNativeAotIcu               | Ubuntu | [Native AOT]          | ✖️ No      | ✅ Yes         |        46.11 MB |
+| ConsoleAppNativeAotDistroless        | Ubuntu | [Native AOT]          | ✅ Yes      | ✖️ No         |         6.35 MB |
+| ConsoleAppNativeAotDistrolessIcu     | Ubuntu | [Native AOT]          | ✅ Yes      | ✅ Yes         |        21.31 MB |
 | WebApi                               | Ubuntu | [Framework-dependent] | ✖️ No      | ✖️ No         |        92.48 MB |
 | WebApiIcu                            | Ubuntu | [Framework-dependent] | ✖️ No      | ✅ Yes         |        92.48 MB |
 | WebApiDistroless                     | Ubuntu | [Framework-dependent] | ✅ Yes      | ✖️ No         |        52.81 MB |
@@ -32,10 +32,10 @@
 | WebApiNativeAotDistrolessIcu         | Ubuntu | [Native AOT]          | ✅ Yes      | ✅ Yes         |        26.56 MB |
 | ConsoleApp                           | Alpine | [Framework-dependent] | ✖️ No      | ✖️ No         |        39.75 MB |
 | ConsoleAppIcu                        | Alpine | [Framework-dependent] | ✖️ No      | ✅ Yes         |        54.22 MB |
-| ConsoleAppSelfContained              | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        47.66 MB |
-| ConsoleAppSelfContainedIcu           | Alpine | [Self-contained]      | ✖️ No      | ✅ Yes         |        62.26 MB |
-| ConsoleAppNativeAot                  | Alpine | [Native AOT]          | ✖️ No      | ✖️ No         |        42.45 MB |
-| ConsoleAppNativeAotIcu               | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        57.14 MB |
+| ConsoleAppSelfContained              | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        12.60 MB |
+| ConsoleAppSelfContainedIcu           | Alpine | [Self-contained]      | ✖️ No      | ✅ Yes         |        27.18 MB |
+| ConsoleAppNativeAot                  | Alpine | [Native AOT]          | ✖️ No      | ✖️ No         |         5.44 MB |
+| ConsoleAppNativeAotIcu               | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        20.00 MB |
 | WebApi                               | Alpine | [Framework-dependent] | ✖️ No      | ✖️ No         |        51.93 MB |
 | WebApiIcu                            | Alpine | [Framework-dependent] | ✖️ No      | ✅ Yes         |        66.40 MB |
 | WebApiSelfContained                  | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        20.95 MB |

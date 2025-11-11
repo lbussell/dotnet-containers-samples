@@ -5,11 +5,12 @@ WORKDIR /source
 
 # Copy source code and publish app
 COPY --link . .
-RUN dotnet publish -o /app
+RUN dotnet publish -o /app \
+    && rm /app/*.dbg
 
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
 WORKDIR /app
 COPY --link --from=build /app .
 USER $APP_UID
