@@ -24,7 +24,6 @@ RUN dotnet publish -o /app
 
 
 # Runtime stage
-# Runtime stage
 #if (globalization && (aot || self-contained))
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
 #endif

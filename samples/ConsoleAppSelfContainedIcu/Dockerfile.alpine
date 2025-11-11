@@ -14,7 +14,6 @@ RUN dotnet publish -a $TARGETARCH --no-restore -o /app
 
 
 # Runtime stage
-# Runtime stage
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
 FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine
 

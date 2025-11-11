@@ -22,11 +22,11 @@ RUN --mount=type=cache,target=/root/.nuget \
 
 
 # Runtime stage
-#if (globalization && (aot || self-contained))
-FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
-#endif
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 #if (globalization)
+#if (aot || self-contained)
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
+#else
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 
 # Enable globalization on Alpine Linux
 ENV \
@@ -38,6 +38,11 @@ RUN apk add --no-cache \
     icu-libs \
     tzdata
 
+#endif
+#elseif (aot || self-contained)
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
+#else
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 #endif
 WORKDIR /app
 COPY --link --from=build /app .

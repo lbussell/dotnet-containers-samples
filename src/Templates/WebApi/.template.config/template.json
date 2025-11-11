@@ -13,10 +13,10 @@
   "preferNameDirectory": true,
   "sources": [
     {
-      "exclude": [ "**/.template.config/**" ]
-    },
-    {
-      "exclude": [ "Dockerfile.alpine" ],
+      "exclude": [
+        "Dockerfile.alpine",
+        "**/.template.config/**"
+      ],
       "modifiers": [
         {
           "condition": "!distroless",
@@ -143,28 +143,6 @@
         }
       ],
       "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
-      "continueOnError": false
-    },
-    {
-      "condition": "(aot && baseImageOS == 'nanoserver')",
-      "description": "Error: Native AOT is not supported on nanoserver",
-      "manualInstructions": [
-        {
-          "text": "Native AOT compilation is not supported on Windows Nano Server. Please choose a different base OS (noble, alpine, or azurelinux)."
-        }
-      ],
-      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D3",
-      "continueOnError": false
-    },
-    {
-      "condition": "(distroless && baseImageOS != 'noble' && baseImageOS != 'azurelinux')",
-      "description": "Error: Distroless images are only available for noble and azurelinux",
-      "manualInstructions": [
-        {
-          "text": "Distroless images are only available for Ubuntu Noble (noble) and Azure Linux (azurelinux). Please choose one of these base OS options."
-        }
-      ],
-      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D4",
       "continueOnError": false
     }
   ]

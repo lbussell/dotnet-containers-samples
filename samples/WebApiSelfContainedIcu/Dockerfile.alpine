@@ -14,18 +14,6 @@ RUN --mount=type=cache,target=/root/.nuget \
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine-extra
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
-
-# Enable globalization on Alpine Linux
-ENV \
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8
-RUN apk add --no-cache \
-    icu-data-full \
-    icu-libs \
-    tzdata
-
 WORKDIR /app
 COPY --link --from=build /app .
 USER $APP_UID
