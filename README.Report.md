@@ -38,10 +38,10 @@
 | ConsoleAppNativeAotIcu               | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        57.14 MB |
 | WebApi                               | Alpine | [Framework-dependent] | ✖️ No      | ✖️ No         |        51.93 MB |
 | WebApiIcu                            | Alpine | [Framework-dependent] | ✖️ No      | ✅ Yes         |        66.40 MB |
-| WebApiSelfContained                  | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        68.18 MB |
-| WebApiSelfContainedIcu               | Alpine | [Self-contained]      | ✖️ No      | ✅ Yes         |        82.75 MB |
-| WebApiNativeAot                      | Alpine | [Native AOT]          | ✖️ No      | ✖️ No         |        57.92 MB |
-| WebApiNativeAotIcu                   | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        72.49 MB |
+| WebApiSelfContained                  | Alpine | [Self-contained]      | ✖️ No      | ✖️ No         |        20.95 MB |
+| WebApiSelfContainedIcu               | Alpine | [Self-contained]      | ✖️ No      | ✅ Yes         |        35.52 MB |
+| WebApiNativeAot                      | Alpine | [Native AOT]          | ✖️ No      | ✖️ No         |        10.69 MB |
+| WebApiNativeAotIcu                   | Alpine | [Native AOT]          | ✖️ No      | ✅ Yes         |        25.25 MB |
 
 For more information on .NET image variants and AOT images, please see the following documentation:
 
